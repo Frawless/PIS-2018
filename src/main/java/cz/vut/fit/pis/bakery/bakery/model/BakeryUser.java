@@ -3,6 +3,7 @@ package cz.vut.fit.pis.bakery.bakery.model;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "bakeryuser")
@@ -25,6 +26,10 @@ public class BakeryUser {
 
     @Column(name = "phone_number")
     private String phoneNumber;
+
+
+    @OneToMany(mappedBy = "bakeryUser", cascade = CascadeType.ALL)
+    private List<UsersOrder> usersOrders;
 
     public Long getId() {
         return id;
@@ -64,5 +69,13 @@ public class BakeryUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<UsersOrder> getUsersOrders() {
+        return usersOrders;
+    }
+
+    public void setUsersOrders(List<UsersOrder> usersOrders) {
+        this.usersOrders = usersOrders;
     }
 }
