@@ -1,6 +1,6 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
-import cz.vut.fit.pis.bakery.bakery.model.User;
+import cz.vut.fit.pis.bakery.bakery.model.BakeryUser;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,55 +13,59 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/")
-    public List<User> users(){
-        return userRepository.findAll();
+    public List<BakeryUser> users(){
+        return (List<BakeryUser>) userRepository.findAll();
     }
 
     @PostMapping("/")
-    public User createUser(@Valid @RequestBody User user){
-        return userRepository.save(user);
+    public BakeryUser createUser(@Valid @RequestBody BakeryUser bakeryUser){
+        return userRepository.save(bakeryUser);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable(value = "id") Long userId){
-        User user = userRepository.findOne(userId);
+    public ResponseEntity<BakeryUser> getUser(@PathVariable(value = "id") Long userId){
+        BakeryUser bakeryUser = userRepository.findOne(userId);
 
-        if (user == null){
+        if (bakeryUser == null){
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(bakeryUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable(value = "id") Long id, @Valid @RequestBody User userDetails){
-        User user = userRepository.findOne(id);
-        if (user == null){
+    public ResponseEntity<BakeryUser> update(@PathVariable(value = "id") Long id, @Valid @RequestBody BakeryUser bakeryUserDetails){
+        BakeryUser bakeryUser = userRepository.findOne(id);
+        if (bakeryUser == null){
             return ResponseEntity.notFound().build();
         }
 
-        user.setName(userDetails.getName());
-        user.setSurname(userDetails.getSurname());
-        user.setMail(userDetails.getMail());
-        user.setPhoneNumber(userDetails.getPhoneNumber());
+        bakeryUser.setName(bakeryUserDetails.getName());
+        bakeryUser.setSurname(bakeryUserDetails.getSurname());
+        bakeryUser.setEmail(bakeryUserDetails.getEmail());
+        bakeryUser.setPhoneNumber(bakeryUserDetails.getPhoneNumber());
 
-        User updatedUser = userRepository.save(user);
+        BakeryUser updatedBakeryUser = userRepository.save(bakeryUser);
 
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(updatedBakeryUser);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable(value = "id") Long id){
-        User user = userRepository.findOne(id);
-        if (user == null){
+    public ResponseEntity<BakeryUser> deleteUser(@PathVariable(value = "id") Long id){
+        BakeryUser bakeryUser = userRepository.findOne(id);
+        if (bakeryUser == null){
             return ResponseEntity.notFound().build();
         }
 
-        userRepository.delete(user);
+        userRepository.delete(bakeryUser);
         return ResponseEntity.ok().build();
     }
 }

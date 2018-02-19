@@ -5,20 +5,25 @@ import org.hibernate.validator.constraints.Email;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "notes")
-public class User {
+@Table(name = "bakeryuser")
+public class BakeryUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "surname")
     private String surname;
 
     @Email
-    private String mail;
+    @Column(name = "email")
+    private String email;
 
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     public Long getId() {
@@ -45,19 +50,19 @@ public class User {
         this.surname = surname;
     }
 
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
