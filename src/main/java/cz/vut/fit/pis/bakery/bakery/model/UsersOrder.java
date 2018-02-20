@@ -1,6 +1,8 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Entity
@@ -16,11 +18,13 @@ public class UsersOrder {
     @Column(name = "orderdate")
     private Date orderDate;
 
+    @NotNull
+    @Pattern(regexp = "(PENDING|ACCEPTED|DONE|IN_PROCESS)")
     @Column(name = "state")
     private String state;
 
     @ManyToOne
-    @JoinColumn(name = "bakeryuser_id")
+    @JoinColumn(name = "bakeryuser")
     private BakeryUser bakeryUser;
 
 

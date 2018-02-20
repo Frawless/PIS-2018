@@ -1,6 +1,7 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
 import cz.vut.fit.pis.bakery.bakery.model.BakeryUser;
+import cz.vut.fit.pis.bakery.bakery.model.UsersOrder;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -67,5 +68,10 @@ public class UserController {
 
         userRepository.delete(bakeryUser);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/orders")
+    public List<UsersOrder> getUsersOrders(@PathVariable(value = "id") Long id){
+        return userRepository.findOne(id).getUsersOrders();
     }
 }

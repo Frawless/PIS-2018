@@ -1,8 +1,10 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -14,21 +16,27 @@ public class BakeryUser {
     @Column(name = "id")
     private Long id;
 
+
+    @NotNull
     @Column(name = "name")
     private String name;
 
+    @NotNull
     @Column(name = "surname")
     private String surname;
 
+
+    @NotNull
     @Email
     @Column(name = "email")
     private String email;
 
+    @NotNull
     @Column(name = "phone_number")
     private String phoneNumber;
 
-
-    @OneToMany(mappedBy = "bakeryUser", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bakeryUser", cascade = CascadeType.ALL)
     private List<UsersOrder> usersOrders;
 
     public Long getId() {
