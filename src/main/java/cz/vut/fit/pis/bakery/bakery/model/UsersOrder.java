@@ -1,10 +1,12 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
+
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "usersorder")
@@ -32,13 +34,16 @@ public class UsersOrder {
     @JoinColumn(name = "car")
     private Car car;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_product",
-            joinColumns = {@JoinColumn(name = "users_order")},
-            inverseJoinColumns = {@JoinColumn(name = "product")}
-    )
-    private Set<Product> products;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Item> items;
+
+//    @ManyToMany
+//    @JoinTable(
+//            name = "order_product",
+//            joinColumns = {@JoinColumn(name = "users_order")},
+//            inverseJoinColumns = {@JoinColumn(name = "product")}
+//    )
+//    private Set<Catalog> products;
 
 
     public Long getId() {
@@ -81,11 +86,19 @@ public class UsersOrder {
         this.car = car;
     }
 
-    public Set<Product> getProducts() {
-        return products;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setProducts(Set<Product> products) {
-        this.products = products;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
+//
+//    public Set<Catalog> getProducts() {
+//        return products;
+//    }
+//
+//    public void setProducts(Set<Catalog> products) {
+//        this.products = products;
+//    }
 }
