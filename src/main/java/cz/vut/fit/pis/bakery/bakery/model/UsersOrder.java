@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "usersorder")
@@ -30,6 +31,14 @@ public class UsersOrder {
     @ManyToOne
     @JoinColumn(name = "car")
     private Car car;
+
+    @ManyToMany
+    @JoinTable(
+            name = "order_product",
+            joinColumns = {@JoinColumn(name = "users_order")},
+            inverseJoinColumns = {@JoinColumn(name = "product")}
+    )
+    private Set<Product> products;
 
 
     public Long getId() {
@@ -70,5 +79,13 @@ public class UsersOrder {
 
     public void setCar(Car car) {
         this.car = car;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
 }
