@@ -27,6 +27,10 @@ public class UsersOrder {
     @JoinColumn(name = "bakeryuser")
     private BakeryUser bakeryUser;
 
+    @ManyToOne
+    @JoinColumn(name = "car")
+    private Car car;
+
 
     public Long getId() {
         return id;
@@ -58,5 +62,13 @@ public class UsersOrder {
 
     public void setBakeryUser(BakeryUser bakeryUser) {
         this.bakeryUser = bakeryUser;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
     }
 }

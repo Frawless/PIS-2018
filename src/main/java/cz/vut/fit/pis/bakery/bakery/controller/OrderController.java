@@ -31,6 +31,17 @@ public class OrderController {
         return (List<UsersOrder>) orderRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UsersOrder> getOrder(@PathVariable(value = "id") Long id){
+        UsersOrder order = orderRepository.findOne(id);
+
+        if (order == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(order);
+    }
+
     @PostMapping("/user/{id}")
     public UsersOrder createOrderForUser(@PathVariable(value = "id") Long id, @Valid @RequestBody UsersOrder usersOrder) {
         BakeryUser user = userRepository.findOne(id);
