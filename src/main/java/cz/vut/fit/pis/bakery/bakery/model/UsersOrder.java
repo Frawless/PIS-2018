@@ -2,6 +2,10 @@ package cz.vut.fit.pis.bakery.bakery.model;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -26,24 +30,19 @@ public class UsersOrder {
     @Column(name = "state")
     private String state;
 
+    @JsonBackReference(value = "users-order")
     @ManyToOne
     @JoinColumn(name = "bakeryuser")
     private BakeryUser bakeryUser;
 
+    @JsonBackReference(value = "orders-car")
     @ManyToOne
     @JoinColumn(name = "car")
     private Car car;
 
+    @JsonManagedReference(value = "orders-item")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     private List<Item> items;
-
-//    @ManyToMany
-//    @JoinTable(
-//            name = "order_product",
-//            joinColumns = {@JoinColumn(name = "users_order")},
-//            inverseJoinColumns = {@JoinColumn(name = "product")}
-//    )
-//    private Set<Catalog> products;
 
 
     public Long getId() {

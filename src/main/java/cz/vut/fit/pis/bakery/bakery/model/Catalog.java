@@ -1,5 +1,9 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -19,6 +23,7 @@ public class Catalog {
     @Column(name = "total_amount")
     private int totalAmount;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "catalog", cascade = CascadeType.ALL)
     private List<Item> items;
 

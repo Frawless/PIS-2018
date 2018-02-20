@@ -1,6 +1,8 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
@@ -35,7 +37,7 @@ public class BakeryUser {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @JsonIgnore
+    @JsonManagedReference(value = "users-order")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bakeryUser", cascade = CascadeType.ALL)
     private List<UsersOrder> usersOrders;
 

@@ -1,5 +1,8 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -20,10 +23,12 @@ public class Item {
     @Column(name = "best_before")
     private Date bestBefore;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "catalog")
     private Catalog catalog;
 
+    @JsonBackReference(value = "orders-item")
     @ManyToOne
     @JoinColumn(name = "order_id")
     private UsersOrder order;

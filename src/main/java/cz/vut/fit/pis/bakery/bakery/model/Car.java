@@ -1,6 +1,8 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,7 +23,7 @@ public class Car {
     private String type;
 
 
-    @JsonIgnore
+    @JsonManagedReference(value = "orders-car")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "car", cascade = CascadeType.ALL)
     private List<UsersOrder> orders;
 
