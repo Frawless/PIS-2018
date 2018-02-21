@@ -1,9 +1,9 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
-import cz.vut.fit.pis.bakery.bakery.model.Catalog;
+import cz.vut.fit.pis.bakery.bakery.model.Product;
 import cz.vut.fit.pis.bakery.bakery.model.Item;
 import cz.vut.fit.pis.bakery.bakery.model.UsersOrder;
-import cz.vut.fit.pis.bakery.bakery.repository.CatalogRepository;
+import cz.vut.fit.pis.bakery.bakery.repository.ProductRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.ItemRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ public class ItemController {
 
     private final ItemRepository itemRepository;
 
-    private final CatalogRepository catalogRepository;
+    private final ProductRepository productRepository;
 
     private final OrderRepository orderRepository;
 
     @Autowired
-    public ItemController(ItemRepository itemRepository, CatalogRepository catalogRepository, OrderRepository orderRepository) {
+    public ItemController(ItemRepository itemRepository, ProductRepository productRepository, OrderRepository orderRepository) {
         this.itemRepository = itemRepository;
-        this.catalogRepository = catalogRepository;
+        this.productRepository = productRepository;
         this.orderRepository = orderRepository;
     }
 
@@ -50,14 +50,14 @@ public class ItemController {
             @PathVariable(value = "name") String name
             ,@PathVariable(value = "orderId") Long orderId
             ,@RequestBody Item item){
-        Catalog catalog = catalogRepository.findByName(name);
+        Product product = productRepository.findByName(name);
         UsersOrder order = orderRepository.findOne(orderId);
 
-        if (catalog == null || order == null){
+        if (product == null || order == null){
             return ResponseEntity.notFound().build();
         }
 
-        item.setCatalog(catalog);
+        item.setProduct(product);
         item.setOrder(order);
 
         return ResponseEntity.ok().body(itemRepository.save(item));
@@ -76,7 +76,7 @@ public class ItemController {
 
         itemRepository.save(item);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(item);
     }
 
 

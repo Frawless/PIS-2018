@@ -1,7 +1,6 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -25,8 +24,8 @@ public class Item {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "catalog")
-    private Catalog catalog;
+    @JoinColumn(name = "product")
+    private Product product;
 
     @JsonBackReference(value = "orders-item")
     @ManyToOne
@@ -66,12 +65,12 @@ public class Item {
         this.id = id;
     }
 
-    public Catalog getCatalog() {
-        return catalog;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setCatalog(Catalog catalog) {
-        this.catalog = catalog;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public UsersOrder getOrder() {

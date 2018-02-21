@@ -3,7 +3,6 @@ package cz.vut.fit.pis.bakery.bakery.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -93,11 +92,11 @@ public class UsersOrder {
         this.items = items;
     }
 //
-//    public Set<Catalog> getProducts() {
+//    public Set<Product> getProducts() {
 //        return products;
 //    }
 //
-//    public void setProducts(Set<Catalog> products) {
+//    public void setProducts(Set<Product> products) {
 //        this.products = products;
 //    }
 }

@@ -1,15 +1,15 @@
 package cz.vut.fit.pis.bakery.bakery.repository;
 
-import cz.vut.fit.pis.bakery.bakery.model.Catalog;
+import cz.vut.fit.pis.bakery.bakery.model.Product;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
 @Repository
-public interface CatalogRepository extends CrudRepository<Catalog, Long> {
+public interface ProductRepository extends CrudRepository<Product, Long> {
 
-    Catalog findByName(String name);
+    Product findByName(String name);
 
     @Transactional
     void deleteByName(String name);

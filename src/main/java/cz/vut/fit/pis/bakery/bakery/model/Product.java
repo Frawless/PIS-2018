@@ -1,7 +1,5 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -9,8 +7,8 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "catalog")
-public class Catalog {
+@Table(name = "product")
+public class Product {
     @Id
     @Column(name = "name")
     private String name;
@@ -24,8 +22,21 @@ public class Catalog {
     private int totalAmount;
 
     @JsonManagedReference
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "catalog", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
     private List<Item> items;
+
+
+
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
+    @JoinTable(
+            name = "product_ingredient",
+            joinColumns = {@JoinColumn(name = "product_id")},
+            inverseJoinColumns = {@JoinColumn(name = "ingredient_id")}
+    )
+    private List<Ingredient> ingredients;
 
 
     public String getEnergyValue() {
@@ -60,5 +71,14 @@ public class Catalog {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }

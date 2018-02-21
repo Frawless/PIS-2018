@@ -91,10 +91,7 @@ public class CarController {
             return ResponseEntity.notFound().build();
         }
 
-        orders.forEach(order -> {
-            order.setCar(car);
-            orderRepository.save(order);
-        });
+        orderRepository.save(orders);
 
         return ResponseEntity.ok(orders);
     }
