@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
 
@@ -25,9 +24,9 @@ public class UsersOrder {
     private Date orderDate;
 
     @NotNull
-    @Pattern(regexp = "(PENDING|ACCEPTED|DONE|IN_PROCESS)")
+    @Enumerated(EnumType.STRING)
     @Column(name = "state")
-    private String state;
+    private State state;
 
     @JsonBackReference(value = "users-order")
     @ManyToOne
@@ -60,13 +59,6 @@ public class UsersOrder {
         this.orderDate = orderDate;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
 
     public BakeryUser getBakeryUser() {
         return bakeryUser;
@@ -91,12 +83,12 @@ public class UsersOrder {
     public void setItems(List<Item> items) {
         this.items = items;
     }
-//
-//    public Set<Product> getProducts() {
-//        return products;
-//    }
-//
-//    public void setProducts(Set<Product> products) {
-//        this.products = products;
-//    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 }

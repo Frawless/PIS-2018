@@ -3,6 +3,8 @@ package cz.vut.fit.pis.bakery.bakery.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -13,8 +15,11 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Min(1)
     @Column(name = "ordered_amount")
     private int orderedAmount;
+
 
     @Column(name = "date_of_cooking")
     private Date dateOfCooking;
