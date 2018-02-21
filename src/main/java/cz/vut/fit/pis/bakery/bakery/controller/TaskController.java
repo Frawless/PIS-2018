@@ -63,11 +63,6 @@ public class TaskController {
 
     @PostMapping("/")
     public Task createPlan(@RequestBody Task task){
-        try {
-            task.setDate(simpleDateFormat.parse(simpleDateFormat.format(task.getDate())));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         return taskRepository.save(task);
     }
 
