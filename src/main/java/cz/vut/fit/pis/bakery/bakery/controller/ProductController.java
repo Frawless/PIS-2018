@@ -31,7 +31,6 @@ public class ProductController {
 
 
     @GetMapping("/")
-    @ModelAttribute("products")
     public List<Product> products(){
         return (List<Product>) productRepository.findAll();
     }
