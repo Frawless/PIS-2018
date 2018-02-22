@@ -53,6 +53,8 @@ public class UserController {
         bakeryUser.setSurname(bakeryUserDetails.getSurname());
         bakeryUser.setEmail(bakeryUserDetails.getEmail());
         bakeryUser.setPhoneNumber(bakeryUserDetails.getPhoneNumber());
+        bakeryUser.setRole(bakeryUserDetails.getRole());
+        bakeryUser.setPassword(bakeryUserDetails.getPassword());
 
         BakeryUser updatedBakeryUser = userRepository.save(bakeryUser);
 

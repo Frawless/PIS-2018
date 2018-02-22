@@ -2,6 +2,7 @@ package cz.vut.fit.pis.bakery.bakery.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.Email;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,9 @@ public class BakeryUser {
     @Column(name = "id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role = Role.USER;
 
     @NotNull
     @Column(name = "name")
@@ -30,6 +34,10 @@ public class BakeryUser {
     @Email
     @Column(name = "email")
     private String email;
+
+    @NotNull
+    @Column(name = "password")
+    private String password;
 
     @NotNull
     @Column(name = "phone_number")
@@ -85,5 +93,21 @@ public class BakeryUser {
 
     public void setUsersOrders(List<UsersOrder> usersOrders) {
         this.usersOrders = usersOrders;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

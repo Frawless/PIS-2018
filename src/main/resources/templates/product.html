@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+<h1>Welcome!</h1>
+<h2>List of products</h2>
+
+<tr th:each="product : ${products}">
+    <td th:text="${product.name}">1</td>
+    <td><a href="#" th:text="${product.energyValue}">Title ...</a></td>
+    <td th:text="${product.totalAmount}">Text ...</td>
+</tr>
+
+<p>Click <a th:href="@{/user}">here</a> to see all users.</p>
+</body>
+</html>
