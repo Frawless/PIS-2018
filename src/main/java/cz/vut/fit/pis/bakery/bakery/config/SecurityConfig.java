@@ -2,13 +2,17 @@ package cz.vut.fit.pis.bakery.bakery.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
 
@@ -21,11 +25,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     UserDetailsService userDetailsService;
 
 
-    private final DataSource dataSource;
-
     @Autowired
-    public SecurityConfig(@Qualifier("dataSource") DataSource dataSource) {
-        this.dataSource = dataSource;
+    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
+        auth.authenticationProvider(authenticationProvider());
+    }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
     }
 
 
@@ -35,7 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/", "/product/").permitAll()
+                    .antMatchers("/role/").permitAll()
                     .antMatchers(HttpMethod.POST, "/user/").permitAll()
+                    .antMatchers("/item/").access("hasRole('ADMIN')")
                     .anyRequest().authenticated()
                 .and()
                 .formLogin()

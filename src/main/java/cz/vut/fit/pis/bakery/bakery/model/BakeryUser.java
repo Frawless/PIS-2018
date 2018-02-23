@@ -7,19 +7,17 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "bakeryuser")
 public class BakeryUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Email
+    @Column(name = "email")
+    private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private Role role = Role.USER;
 
     @NotNull
     @Column(name = "name")
@@ -30,10 +28,15 @@ public class BakeryUser {
     private String surname;
 
 
-    @NotNull
-    @Email
-    @Column(name = "email")
-    private String email;
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
+    @JoinTable(
+            name = "user_role",
+            joinColumns = {@JoinColumn(name = "user_email")},
+            inverseJoinColumns = {@JoinColumn(name = "role")}
+    )
+    private List<Role> roles;
 
     @NotNull
     @Column(name = "password")
@@ -47,13 +50,8 @@ public class BakeryUser {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bakeryUser", cascade = CascadeType.ALL)
     private List<UsersOrder> usersOrders;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 
     public String getName() {
         return name;
@@ -95,13 +93,6 @@ public class BakeryUser {
         this.usersOrders = usersOrders;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 
     public String getPassword() {
         return password;
@@ -109,5 +100,13 @@ public class BakeryUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
