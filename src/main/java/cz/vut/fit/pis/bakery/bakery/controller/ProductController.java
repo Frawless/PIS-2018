@@ -7,6 +7,7 @@ import cz.vut.fit.pis.bakery.bakery.repository.IngredientRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class ProductController {
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Product createProduct(@RequestBody Product product){
         return productRepository.save(product);
     }

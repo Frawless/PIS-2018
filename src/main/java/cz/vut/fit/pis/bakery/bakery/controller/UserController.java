@@ -1,14 +1,20 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
 import cz.vut.fit.pis.bakery.bakery.model.BakeryUser;
+import cz.vut.fit.pis.bakery.bakery.model.Role;
 import cz.vut.fit.pis.bakery.bakery.model.UsersOrder;
+import cz.vut.fit.pis.bakery.bakery.repository.RoleRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -16,9 +22,15 @@ public class UserController {
 
     private final UserRepository userRepository;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final RoleRepository roleRepository;
+
     @Autowired
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/")
@@ -27,8 +39,20 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public BakeryUser createUser(@Valid @RequestBody BakeryUser bakeryUser){
-        return userRepository.save(bakeryUser);
+    public ResponseEntity<BakeryUser> createUser(@Valid @RequestBody BakeryUser bakeryUser){
+        List<Role> roles = new ArrayList<>();
+
+        for (Role r:
+             bakeryUser.getRoles()) {
+            roles.add(roleRepository.findOne(r.getName()));
+        }
+
+        if (roles.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        bakeryUser.setRoles(roles);
+        bakeryUser.setPassword(bCryptPasswordEncoder.encode(bakeryUser.getPassword()));
+        return ResponseEntity.ok(userRepository.save(bakeryUser));
     }
 
     @GetMapping("/{id}")
@@ -53,7 +77,7 @@ public class UserController {
         bakeryUser.setSurname(bakeryUserDetails.getSurname());
         bakeryUser.setEmail(bakeryUserDetails.getEmail());
         bakeryUser.setPhoneNumber(bakeryUserDetails.getPhoneNumber());
-        bakeryUser.setRole(bakeryUserDetails.getRole());
+        bakeryUser.setRoles(bakeryUserDetails.getRoles());
         bakeryUser.setPassword(bakeryUserDetails.getPassword());
 
         BakeryUser updatedBakeryUser = userRepository.save(bakeryUser);

@@ -28,7 +28,6 @@ public class Ingredient {
     @Column(name = "stored")
     private int stored;
 
-
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},

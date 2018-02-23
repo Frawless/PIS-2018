@@ -1,6 +1,7 @@
 package cz.vut.fit.pis.bakery.bakery.service;
 
 import cz.vut.fit.pis.bakery.bakery.model.BakeryUser;
+import cz.vut.fit.pis.bakery.bakery.model.Role;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -40,9 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private List<GrantedAuthority> getGrantedAuthorities(BakeryUser user){
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
-        authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
+        List<GrantedAuthority> authorities = user.getRoles().stream().map(Role::getName).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         System.out.print("authorities :"+authorities);
         return authorities;
     }
