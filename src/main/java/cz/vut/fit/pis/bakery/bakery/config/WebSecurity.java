@@ -38,12 +38,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .antMatchers(HttpMethod.DELETE, DELETE_USER).hasAuthority("ADMIN")
-//                .antMatchers(HttpMethod.GET, USERS).hasAuthority("ADMIN")
-                .antMatchers("/role/").permitAll()
-                .antMatchers("/item/").hasAuthority("ADMIN")
-                .antMatchers("/product/").hasAuthority("ADMIN")
-                .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), userRepository))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))

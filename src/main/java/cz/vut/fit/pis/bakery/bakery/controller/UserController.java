@@ -12,10 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Controller is responsible for elaboration with BackeryUser class.
@@ -59,11 +58,6 @@ public class UserController {
 
         roles.add(roleRepository.findOne("USER"));  // Add default role for each user
 
-        Role updateMe = new Role(); // Allow user update only own page
-        updateMe.setName("UPDATE_" + bakeryUser.getUsername().toUpperCase());
-
-        roles.add(updateMe);
-
         bakeryUser.setRoles(roles);
         bakeryUser.setPassword(bCryptPasswordEncoder.encode(bakeryUser.getPassword())); // Encrypt password
         return ResponseEntity.ok(userRepository.save(bakeryUser));
@@ -74,8 +68,9 @@ public class UserController {
      * @param username Username
      * @return return certain user.
      */
+    @PreAuthorize("hasAuthority('ADMIN') or #principal.name == #username")
     @GetMapping("/{username}")
-    public ResponseEntity<BakeryUser> getUser(@PathVariable(value = "username") String username){
+    public ResponseEntity<BakeryUser> getUser(Principal principal, @PathVariable(value = "username") String username){
         BakeryUser bakeryUser = userRepository.findByUsername(username);
 
         if (bakeryUser == null){
@@ -92,35 +87,19 @@ public class UserController {
      * @return Updated user
      */
     @PutMapping("/{username}")
-//    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('UPDATE_{username}')")
-    public ResponseEntity<BakeryUser> update(@PathVariable(value = "username") String username, @Valid @RequestBody BakeryUser bakeryUserDetails){
+    @PreAuthorize("hasAuthority('ADMIN') or #principal.name == #username")
+    public ResponseEntity<BakeryUser> update(Principal principal, @PathVariable(value = "username") String username, @Valid @RequestBody BakeryUser bakeryUserDetails){
         BakeryUser bakeryUser = userRepository.findByUsername(username);
 
         if (bakeryUser == null){
             return ResponseEntity.notFound().build();
         }
 
-        List<Role> roles = new ArrayList<>();
-
-        for (Role r:
-                bakeryUser.getRoles()) {
-            roles.add(roleRepository.findOne(r.getName()));
-        }
-
-        Role userRole = roleRepository.findOne("USER");
-        if (!roles.contains(userRole)){
-            roles.add(userRole);    // It is not possible to remove 'USER' role.
-        }
-        Role updateMe = roleRepository.findOne("UPDATE_" + username.toUpperCase());
-        if (!roles.contains(updateMe)){
-            roles.add(updateMe);
-        }
-
         bakeryUser.setName(bakeryUserDetails.getName());
         bakeryUser.setSurname(bakeryUserDetails.getSurname());
         bakeryUser.setEmail(bakeryUserDetails.getEmail());
         bakeryUser.setPhoneNumber(bakeryUserDetails.getPhoneNumber());
-        bakeryUser.setRoles(roles);
+
         bakeryUser.setPassword(bCryptPasswordEncoder.encode(bakeryUserDetails.getPassword()));
 
         BakeryUser updatedBakeryUser = userRepository.save(bakeryUser);
@@ -148,8 +127,9 @@ public class UserController {
      * @param username Username
      * @return List of users's orders
      */
+    @PreAuthorize("hasAuthority('ADMIN') or #principal.name == #username")
     @GetMapping("/{username}/orders")
-    public List<UsersOrder> getUsersOrders(@PathVariable(value = "username") String username){
+    public List<UsersOrder> getUsersOrders(Principal principal, @PathVariable(value = "username") String username){
         return userRepository.findByUsername(username).getUsersOrders();
     }
 }
