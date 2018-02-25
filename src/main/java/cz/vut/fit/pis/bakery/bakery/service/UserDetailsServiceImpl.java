@@ -42,7 +42,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private List<GrantedAuthority> getGrantedAuthorities(BakeryUser user){
-        List<GrantedAuthority> authorities = user.getRoles().stream().map(Role::getName).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(Role::getName)
+//                .map(r -> "ROLE_" + r)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
         System.out.print("authorities :"+authorities);
         return authorities;
     }

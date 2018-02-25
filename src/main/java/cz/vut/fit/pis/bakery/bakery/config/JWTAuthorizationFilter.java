@@ -3,6 +3,8 @@ package cz.vut.fit.pis.bakery.bakery.config;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -12,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static cz.vut.fit.pis.bakery.bakery.config.SecurityConstants.*;
 
@@ -49,8 +54,22 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .getBody()
                     .getSubject();
 
+
+            List<HashMap<String, String>> roles = (List<HashMap<String, String>>) Jwts.parser()
+                    .setSigningKey(SECRET.getBytes())
+                    .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                    .getBody()
+                    .getOrDefault("roles", new ArrayList<>());
+
+
+            List<GrantedAuthority> authorities = roles.stream()
+                    .map(m -> m.get("authority"))
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+
+
             if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                return new UsernamePasswordAuthenticationToken(user, null, authorities);
             }
             return null;
         }
