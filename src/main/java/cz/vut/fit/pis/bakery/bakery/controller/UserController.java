@@ -56,6 +56,12 @@ public class UserController {
     public ResponseEntity<BakeryUser> createUser(@Valid @RequestBody BakeryUser bakeryUser){
         List<Role> roles = new ArrayList<>();
 
+        BakeryUser user = userRepository.findByUsername(bakeryUser.getUsername());
+
+        if (user != null){
+            return ResponseEntity.badRequest().build();
+        }
+
         roles.add(roleRepository.findOne("USER"));  // Add default role for each user
 
         bakeryUser.setRoles(roles);
@@ -113,6 +119,7 @@ public class UserController {
      * @return OK if user exists NotFound otherwise
      */
     @DeleteMapping("/{username}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BakeryUser> deleteUser(@PathVariable(value = "username") String username){
         BakeryUser bakeryUser = userRepository.findByUsername(username);
         if (bakeryUser == null){
