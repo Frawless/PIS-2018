@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -49,7 +50,7 @@ public class IngredientController {
      */
     @PostMapping("/")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public Ingredient createIngredient(@RequestBody Ingredient ingredient){
+    public Ingredient createIngredient(@Valid @RequestBody Ingredient ingredient){
         return ingredientRepository.save(ingredient);
     }
 
@@ -61,7 +62,7 @@ public class IngredientController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<Ingredient> updateIngredient(@PathVariable(value = "id") Long id, @RequestBody Ingredient details){
+    public ResponseEntity<Ingredient> updateIngredient(@PathVariable(value = "id") Long id, @Valid @RequestBody Ingredient details){
         Ingredient ingredient = ingredientRepository.findOne(id);
 
         if (ingredient == null){

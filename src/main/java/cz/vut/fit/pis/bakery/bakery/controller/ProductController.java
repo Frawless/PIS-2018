@@ -10,10 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import javax.validation.Valid;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -63,18 +61,17 @@ public class ProductController {
      */
     @PostMapping("/")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public Product createProduct(@RequestBody Product product){
+    public Product createProduct(@Valid @RequestBody Product product){
 
         List<Ingredient> ingredients;
 
-        if (product.getIngredients() != null
-                && !product.getIngredients().isEmpty()) {
+        if (!product.getIngredients().isEmpty()) {
             ingredients = product.getIngredients().stream()
                     .map(Ingredient::getId)
                     .map(ingredientRepository::findOne)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            product.setIngredients(ingredients);
+            product.setIngredients(new HashSet<>(ingredients));
         }
         return productRepository.save(product);
     }
@@ -87,7 +84,7 @@ public class ProductController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<Product> updateProduct(@PathVariable(name = "id") Long id, @RequestBody Product details){
+    public ResponseEntity<Product> updateProduct(@PathVariable(name = "id") Long id, @Valid @RequestBody Product details){
         Product product = productRepository.findOne(id);
 
         if (product == null){
@@ -96,14 +93,13 @@ public class ProductController {
 
         List<Ingredient> ingredients;
 
-        if (details.getIngredients() != null
-                &&  !details.getIngredients().isEmpty()){
+        if (!details.getIngredients().isEmpty()){
             ingredients = details.getIngredients().stream()
                     .map(Ingredient::getId)
                     .map(ingredientRepository::findOne)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            product.setIngredients(ingredients);
+            product.setIngredients(new HashSet<>(ingredients));
         }
         product.setName(details.getName());
         product.setTotalAmount(details.getTotalAmount());

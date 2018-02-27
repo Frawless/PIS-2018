@@ -23,11 +23,11 @@ public class UsersOrder {
     @Column(name = "orderdate")
     private Date orderDate;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
-    private State state;
+    private State state = State.ACCEPTED;
 
+    @NotNull
     @JsonBackReference(value = "users-order")
     @ManyToOne
     @JoinColumn(name = "bakeryuser")
@@ -38,6 +38,7 @@ public class UsersOrder {
     @JoinColumn(name = "car")
     private Car car;
 
+    @NotNull
     @JsonManagedReference(value = "orders-item")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     private List<Item> items;

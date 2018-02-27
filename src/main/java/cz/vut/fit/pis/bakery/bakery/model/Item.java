@@ -3,6 +3,7 @@ package cz.vut.fit.pis.bakery.bakery.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -15,8 +16,8 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Min(1)
+    @Max(10)
     @Column(name = "ordered_amount")
     private int orderedAmount;
 
@@ -27,7 +28,7 @@ public class Item {
     @Column(name = "best_before")
     private Date bestBefore;
 
-    @JsonBackReference
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "product")
     private Product product;
@@ -35,6 +36,7 @@ public class Item {
     @JsonBackReference(value = "orders-item")
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @NotNull
     private UsersOrder order;
 
 

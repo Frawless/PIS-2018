@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "ingredient")
@@ -40,7 +41,7 @@ public class Ingredient {
             mappedBy = "ingredients"
             )
     @JsonIgnore
-    private List<Product> products;
+    private Set<Product> products;
 
 
     public String getSupplier() {
@@ -84,13 +85,6 @@ public class Ingredient {
         this.stored = stored;
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
 
     public Long getId() {
         return id;
@@ -98,5 +92,13 @@ public class Ingredient {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
 }
