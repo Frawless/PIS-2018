@@ -11,7 +11,12 @@ import java.util.List;
 @Table(name = "bakeryuser")
 public class BakeryUser {
 
+
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @NotNull
     @Column(name = "username")
     private String username;
@@ -120,5 +125,13 @@ public class BakeryUser {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

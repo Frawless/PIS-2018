@@ -3,16 +3,24 @@ package cz.vut.fit.pis.bakery.bakery.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "ingredient")
 public class Ingredient {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @NotNull
+    @Column(name = "name")
+    private String name;
+
+    @NotNull
     @Column(name = "supplier")
     private String supplier;
 
@@ -22,9 +30,7 @@ public class Ingredient {
     @Column(name = "besf_before")
     private Date bestBefore;
 
-    @Column(name = "name")
-    private String name;
-
+    @NotNull
     @Column(name = "stored")
     private int stored;
 
@@ -36,13 +42,6 @@ public class Ingredient {
     @JsonIgnore
     private List<Product> products;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getSupplier() {
         return supplier;
@@ -91,5 +90,13 @@ public class Ingredient {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

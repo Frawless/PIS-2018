@@ -40,7 +40,7 @@ public class UserController {
      *
      * @return List of all users.
      */
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     @GetMapping("/")
     public List<BakeryUser> users(){
         return (List<BakeryUser>) userRepository.findAll();
@@ -74,7 +74,7 @@ public class UserController {
      * @param username Username
      * @return return certain user.
      */
-    @PreAuthorize("hasAuthority('ADMIN') or #principal.name == #username")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE') or #principal.name == #username")
     @GetMapping("/{username}")
     public ResponseEntity<BakeryUser> getUser(Principal principal, @PathVariable(value = "username") String username){
         BakeryUser bakeryUser = userRepository.findByUsername(username);

@@ -10,13 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
     private final ProductRepository productRepository;
@@ -31,14 +32,23 @@ public class ProductController {
     }
 
 
+    /**
+     *
+     * @return List of all products
+     */
     @GetMapping("/")
     public List<Product> products(){
         return (List<Product>) productRepository.findAll();
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Product> getProduct(@PathVariable(value = "name") String id){
-        Product product = productRepository.findByName(id);
+    /**
+     *
+     * @param id ID
+     * @return certain product
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable(value = "id") Long id){
+        Product product = productRepository.findOne(id);
         if (product == null){
             return ResponseEntity.notFound().build();
         }
@@ -46,20 +56,56 @@ public class ProductController {
         return ResponseEntity.ok().body(product);
     }
 
+    /**
+     * Create new product
+     * @param product new product
+     * @return created product
+     */
     @PostMapping("/")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     public Product createProduct(@RequestBody Product product){
+
+        List<Ingredient> ingredients;
+
+        if (product.getIngredients() != null
+                && !product.getIngredients().isEmpty()) {
+            ingredients = product.getIngredients().stream()
+                    .map(Ingredient::getId)
+                    .map(ingredientRepository::findOne)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            product.setIngredients(ingredients);
+        }
         return productRepository.save(product);
     }
 
-    @PutMapping("/{name}")
-    public ResponseEntity<Product> updateProduct(@PathVariable(name = "name") String name, @RequestBody Product details){
-        Product product = productRepository.findByName(name);
+    /**
+     * Update existing product
+     * @param id
+     * @param details
+     * @return
+     */
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<Product> updateProduct(@PathVariable(name = "id") Long id, @RequestBody Product details){
+        Product product = productRepository.findOne(id);
 
         if (product == null){
             return ResponseEntity.notFound().build();
         }
 
+        List<Ingredient> ingredients;
+
+        if (details.getIngredients() != null
+                &&  !details.getIngredients().isEmpty()){
+            ingredients = details.getIngredients().stream()
+                    .map(Ingredient::getId)
+                    .map(ingredientRepository::findOne)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            product.setIngredients(ingredients);
+        }
+        product.setName(details.getName());
         product.setTotalAmount(details.getTotalAmount());
         product.setEnergyValue(details.getEnergyValue());
 
@@ -68,42 +114,16 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Product> delete(@PathVariable(name = "name") String name){
-        Product product = productRepository.findByName(name);
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Product> delete(@PathVariable(name = "id") Long id){
+        Product product = productRepository.findOne(id);
 
         if (product == null){
             return ResponseEntity.notFound().build();
         }
-        productRepository.deleteByName(name);
+        productRepository.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{name}/add/ingredient")
-    public ResponseEntity<Product> addIngredient(@PathVariable(value = "name") String productName, @RequestBody List<Long> ingIds){
-
-        Product product = productRepository.findByName(productName);
-
-        if (product == null){
-            return ResponseEntity.notFound().build();
-        }
-
-        List<Ingredient> ingredients = ingIds.stream()
-                .map(ingredientRepository::findOne)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-
-        if (ingredients.isEmpty()){
-            return ResponseEntity.noContent().build();
-        }
-
-        product.setIngredients(ingredients);
-
-        productRepository.save(product);
-
-        return ResponseEntity.ok(product);
-
-
-    }
 }
