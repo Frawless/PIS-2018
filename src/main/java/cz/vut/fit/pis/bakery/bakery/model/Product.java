@@ -11,11 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "product")
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Product extends ID{
 
     @NotNull
     @Column(name = "name")
@@ -82,14 +78,6 @@ public class Product {
         this.items = items;
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Set<Ingredient> getIngredients() {
         return ingredients;

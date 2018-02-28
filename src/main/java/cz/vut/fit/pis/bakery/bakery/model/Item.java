@@ -10,23 +10,13 @@ import java.util.Date;
 
 @Entity
 @Table(name = "item")
-public class Item {
+public class Item extends ID {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Min(1)
     @Max(10)
     @Column(name = "ordered_amount")
     private int orderedAmount;
-
-
-    @Column(name = "date_of_cooking")
-    private Date dateOfCooking;
-
-    @Column(name = "best_before")
-    private Date bestBefore;
 
     @NotNull
     @ManyToOne
@@ -48,29 +38,6 @@ public class Item {
         this.orderedAmount = orderedAmount;
     }
 
-    public Date getDateOfCooking() {
-        return dateOfCooking;
-    }
-
-    public void setDateOfCooking(Date dateOfCooking) {
-        this.dateOfCooking = dateOfCooking;
-    }
-
-    public Date getBestBefore() {
-        return bestBefore;
-    }
-
-    public void setBestBefore(Date bestBefore) {
-        this.bestBefore = bestBefore;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Product getProduct() {
         return product;

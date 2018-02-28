@@ -12,13 +12,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "usersorder")
-public class UsersOrder {
+public class UsersOrder extends ID{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+    @Column(name = "isDelivery")
+    private Boolean isDelivery = false;
 
     @Column(name = "orderdate")
     private Date orderDate;
@@ -43,14 +40,6 @@ public class UsersOrder {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     private List<Item> items;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Date getOrderDate() {
         return orderDate;
@@ -91,5 +80,13 @@ public class UsersOrder {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public Boolean getDelivery() {
+        return isDelivery;
+    }
+
+    public void setDelivery(Boolean delivery) {
+        isDelivery = delivery;
     }
 }

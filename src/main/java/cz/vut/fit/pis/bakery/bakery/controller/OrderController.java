@@ -1,8 +1,6 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
-import cz.vut.fit.pis.bakery.bakery.model.BakeryUser;
-import cz.vut.fit.pis.bakery.bakery.model.Item;
-import cz.vut.fit.pis.bakery.bakery.model.UsersOrder;
+import cz.vut.fit.pis.bakery.bakery.model.*;
 import cz.vut.fit.pis.bakery.bakery.repository.OrderRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.ProductRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
@@ -32,13 +30,23 @@ public class OrderController {
         this.productRepository = productRepository;
     }
 
-
+    /**
+     *
+     * @return List of all orders have ever made
+     */
     @GetMapping("/")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     public List<UsersOrder> orders() {
         return (List<UsersOrder>) orderRepository.findAll();
     }
 
+    /**
+     * Get certain information about particulat order
+     * @param principal users principal(used in case of user wants to see his order)
+     * @param username identify user
+     * @param orderId Identify order
+     * @return Users order
+     */
     @GetMapping("/{username}/{orderId}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE') or #principal.name == #username")
     public ResponseEntity<UsersOrder> getOrder(Principal principal
@@ -53,6 +61,11 @@ public class OrderController {
         return ResponseEntity.ok().body(order);
     }
 
+    /**
+     * Create new order
+     * @param usersOrder information about order
+     * @return Created order or fail
+     */
     @PostMapping("/")
     public UsersOrder createOrderForUser(@RequestBody UsersOrder usersOrder) {
         BakeryUser user = userRepository.findOne(usersOrder.getBakeryUser().getId());
@@ -70,6 +83,11 @@ public class OrderController {
         return orderRepository.save(usersOrder);
     }
 
+    /**
+     * Remove order from the table
+     * @param id Identifier
+     * @return  OK or FAIL
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UsersOrder> deleteOrder(@PathVariable(value = "id") Long id){
@@ -83,6 +101,12 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Update some information about order.
+     * @param id Identifier
+     * @param details New information about order
+     * @return Updated order
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<UsersOrder> updateOrder(@PathVariable(value = "id") Long id, @Valid @RequestBody UsersOrder details){
@@ -94,15 +118,39 @@ public class OrderController {
 
         for (Item i:
                 details.getItems()) {
-            i.setProduct(productRepository.findOne(i.getProduct().getId()));
+            Product product = productRepository.findOne(i.getProduct().getId());
+
+            if (details.getState() == State.READY){
+                if (product.getTotalAmount() >= i.getOrderedAmount()){
+                    productRepository.decrementProduct(product.getId(), i.getOrderedAmount());
+                    product = productRepository.findOne(i.getProduct().getId());
+                }else {
+                    return ResponseEntity.noContent().build();
+                }
+            }
+            i.setProduct(product);
+
         }
 
-        order.setOrderDate(details.getOrderDate());
         order.setState(details.getState());
+        order.setBakeryUser(userRepository.findOne(details.getId()));
+        order.setItems(details.getItems());
+        order.setOrderDate(details.getOrderDate());
+        order.setDelivery(details.getDelivery());
 
         orderRepository.save(order);
 
 
         return ResponseEntity.ok(order);
+    }
+
+    @GetMapping("/{id}/user")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<BakeryUser> getUserForOrder(@PathVariable(name = "id") Long id){
+        UsersOrder order = orderRepository.findOne(id);
+        if (order == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(order.getBakeryUser());
     }
 }
