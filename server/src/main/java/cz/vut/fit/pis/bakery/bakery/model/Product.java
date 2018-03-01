@@ -1,15 +1,19 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "product")
-public class Product {
-    @Id
+public class Product extends ID{
+
+    @NotNull
     @Column(name = "name")
     private String name;
 
@@ -21,12 +25,13 @@ public class Product {
     @Column(name = "total_amount")
     private int totalAmount;
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
     private List<Item> items;
 
 
 
+    @NotNull
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}
@@ -36,7 +41,7 @@ public class Product {
             joinColumns = {@JoinColumn(name = "product_id")},
             inverseJoinColumns = {@JoinColumn(name = "ingredient_id")}
     )
-    private List<Ingredient> ingredients;
+    private Set<Ingredient> ingredients;
 
 
     public String getEnergyValue() {
@@ -74,11 +79,11 @@ public class Product {
     }
 
 
-    public List<Ingredient> getIngredients() {
+    public Set<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<Ingredient> ingredients) {
+    public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 }

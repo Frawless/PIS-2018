@@ -3,31 +3,22 @@ package cz.vut.fit.pis.bakery.bakery.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
 @Table(name = "item")
-public class Item {
+public class Item extends ID {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @NotNull
     @Min(1)
+    @Max(10)
     @Column(name = "ordered_amount")
     private int orderedAmount;
 
-
-    @Column(name = "date_of_cooking")
-    private Date dateOfCooking;
-
-    @Column(name = "best_before")
-    private Date bestBefore;
-
-    @JsonBackReference
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "product")
     private Product product;
@@ -35,6 +26,7 @@ public class Item {
     @JsonBackReference(value = "orders-item")
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @NotNull
     private UsersOrder order;
 
 
@@ -46,29 +38,6 @@ public class Item {
         this.orderedAmount = orderedAmount;
     }
 
-    public Date getDateOfCooking() {
-        return dateOfCooking;
-    }
-
-    public void setDateOfCooking(Date dateOfCooking) {
-        this.dateOfCooking = dateOfCooking;
-    }
-
-    public Date getBestBefore() {
-        return bestBefore;
-    }
-
-    public void setBestBefore(Date bestBefore) {
-        this.bestBefore = bestBefore;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Product getProduct() {
         return product;

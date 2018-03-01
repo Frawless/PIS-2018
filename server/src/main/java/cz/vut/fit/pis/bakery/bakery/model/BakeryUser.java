@@ -9,9 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "bakeryuser")
-public class BakeryUser {
+public class BakeryUser extends ID {
 
-    @Id
     @NotNull
     @Column(name = "username")
     private String username;
@@ -121,4 +120,5 @@ public class BakeryUser {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
 }

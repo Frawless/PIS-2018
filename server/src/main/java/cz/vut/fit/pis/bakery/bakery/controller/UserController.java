@@ -15,6 +15,8 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Controller is responsible for elaboration with BackeryUser class.
@@ -40,7 +42,7 @@ public class UserController {
      *
      * @return List of all users.
      */
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     @GetMapping("/")
     public List<BakeryUser> users(){
         return (List<BakeryUser>) userRepository.findAll();
@@ -70,11 +72,11 @@ public class UserController {
     }
 
     /**
-     *
+     *∂∂
      * @param username Username
      * @return return certain user.
      */
-    @PreAuthorize("hasAuthority('ADMIN') or #principal.name == #username")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE') or #principal.name == #username")
     @GetMapping("/{username}")
     public ResponseEntity<BakeryUser> getUser(Principal principal, @PathVariable(value = "username") String username){
         BakeryUser bakeryUser = userRepository.findByUsername(username);
@@ -85,6 +87,7 @@ public class UserController {
 
         return ResponseEntity.ok().body(bakeryUser);
     }
+
 
     /**
      * Update user.
@@ -130,13 +133,27 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * @param username Username
-     * @return List of users's orders
-     */
-    @PreAuthorize("hasAuthority('ADMIN') or #principal.name == #username")
-    @GetMapping("/{username}/orders")
-    public List<UsersOrder> getUsersOrders(Principal principal, @PathVariable(value = "username") String username){
-        return userRepository.findByUsername(username).getUsersOrders();
+    @PutMapping("/{username}/grand/role")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<BakeryUser> grandRole(@PathVariable(name = "username") String username, @RequestBody List<Role> newRoles){
+        BakeryUser user = userRepository.findByUsername(username);
+
+        if (user == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!newRoles.isEmpty()){
+
+            List<Role> roles = newRoles.stream()
+                    .map(Role::getName)
+                    .map(roleRepository::findOne)
+                    .collect(Collectors.toList());
+            user.setRoles(roles);
+        }else {
+            user.setRoles(new ArrayList<>());
+        }
+
+        return ResponseEntity.ok(userRepository.save(user));
     }
+
 }

@@ -1,0 +1,50 @@
+// Create new user; POST
+[
+  // Create new user; POST http://localhost:8080/users/sing-up
+  {
+    "name": "name",
+    "surname": "surname",
+    "username": "username",
+    "email": "mail@mail.com",
+    "phoneNumber": "+420 66 66 66",
+    "password": "password"
+  },
+  // Create new ingredient; POST http://localhost:8080/ingredients/
+  {
+  "name": "ingredient1",
+  "supplier": "me",
+  "stored": 100
+  },
+
+  // Create new product; POST http://localhost:8080/products/
+  {
+
+    "name": "product1",
+    "energyValue": 100,
+    "totalAmount": 100,
+    "ingredients": [{"id": 1}] // Tady seznam ingredientu ve tvaru [{"id": 1}, {"id": 2}, {"id": 3}...]. Staci poslat "id" ingredientu
+  },
+
+  // Create new order; POST http://localhost:8080/orders/
+  {
+    "bakeryUser": {
+      "id": 1
+    },  // Musi byt uzivatel, staci jejiho "id"
+    "items": [ // Seznam polozek v kosiku, viz; trida Item.java
+      {
+        "orderedAmount": 1, // Pocet kusu
+        "product": {  // Staci ID produktu
+          "id": 1
+        }
+      },
+      {
+        "orderedAmount": 1,
+        "product": {
+          "id": 2
+        }
+      }
+    ]
+  }
+
+
+]
