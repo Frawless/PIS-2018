@@ -51,7 +51,7 @@ public class OrderController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE') or #principal.name == #username")
     public ResponseEntity<UsersOrder> getOrder(Principal principal
             , @PathVariable(value = "username") String username
-            , @PathVariable(value = "odrerId") Long orderId){
+            , @PathVariable(value = "orderId") Long orderId){
         UsersOrder order = orderRepository.findOne(orderId);
 
         if (order == null){
