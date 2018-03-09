@@ -20,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import javax.servlet.Filter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,20 +36,23 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    private final CORSFilter corsFilter;
     private final UserRepository userRepository;
 
     @Autowired
-    public WebSecurity(UserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository) {
+    public WebSecurity(UserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository, CORSFilter corsFilter) {
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
+        this.corsFilter = corsFilter;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.cors().and().csrf().disable().authorizeRequests()
+        http
+                .addFilter(corsFilter)
+                .csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), userRepository))
