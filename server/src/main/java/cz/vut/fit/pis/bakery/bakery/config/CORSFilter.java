@@ -1,10 +1,15 @@
 package cz.vut.fit.pis.bakery.bakery.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class CORSFilter implements Filter {
@@ -19,6 +24,8 @@ public class CORSFilter implements Filter {
         response.setHeader("Access-Control-Allow-Headers", "x-requested-with, content-type, authorization");
         chain.doFilter(req, res);
     }
+
+
 
     public void init(FilterConfig filterConfig) {
     }

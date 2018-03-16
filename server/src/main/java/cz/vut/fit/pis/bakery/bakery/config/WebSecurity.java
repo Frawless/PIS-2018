@@ -51,7 +51,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .addFilterBefore(corsFilter, JWTAuthenticationFilter.class)
+                .cors().and()
+//                .addFilterBefore(corsFilter, JWTAuthenticationFilter.class)
                 .csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .and()
@@ -67,6 +68,19 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "OPTIONS", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("x-requested-with", "content-type", "authorization"));
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
 
 //    @Bean
 //    CorsConfigurationSource corsConfigurationSource() {
