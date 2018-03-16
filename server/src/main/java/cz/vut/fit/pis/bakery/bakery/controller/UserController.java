@@ -118,13 +118,14 @@ public class UserController {
 
     /**
      * Delete user.
-     * @param username Username
+     *
      * @return OK if user exists NotFound otherwise
      */
-    @DeleteMapping("/{username}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<BakeryUser> deleteUser(@PathVariable(value = "username") String username){
-        BakeryUser bakeryUser = userRepository.findByUsername(username);
+    public ResponseEntity<BakeryUser> deleteUser(@PathVariable(value = "id") Long id){
+//        BakeryUser bakeryUser = userRepository.findByUsername(username);
+        BakeryUser bakeryUser = userRepository.findOne(id);
         if (bakeryUser == null){
             return ResponseEntity.notFound().build();
         }

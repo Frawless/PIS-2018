@@ -7,7 +7,5 @@ class AllowedURLs {
 
     static final String USERS = "/users/";
     static final String SIGN_UP_URL = USERS + "sing-up";
-    static final String DELETE_USER = USERS + "*";
-
 
 }
