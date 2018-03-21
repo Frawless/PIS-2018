@@ -1,5 +1,8 @@
 // Create new user; POST
 [
+
+  // USER
+
   // Create new user; POST http://localhost:8080/users/sing-up
   {
     "name": "name",
@@ -9,31 +12,120 @@
     "phoneNumber": "+420 66 66 66",
     "password": "password"
   },
-  // Create new ingredient; POST http://localhost:8080/ingredients/
+
+  // Get all users; GET http://localhost:8080/users/
+
+  // Get certain user; GET http://localhost:8080/users/username
+
+  // Update certain user; PUT http://localhost:8080/users/username
   {
-  "name": "ingredient1",
-  "supplier": "me",
-  "stored": 100
+    "name": "name",
+    "surname": "surname",
+    "username": "username",
+    "email": "mail@mail.com",
+    "phoneNumber": "+420 66 66 66",
+    "password": "password"
   },
+  // Delete certain user; DELETE http://localhost:8080/users/id
+
+  // Add user role; PUT http://localhost:8080/users/username/grand/role
+  [
+    {
+      "name": "ADMIN"
+    },
+    {
+      "name": "EMPLOYEE"
+    }
+  ],
+
+  // ROLES
+
+  // Get all roles; GET http://localhost:8080/role/
+
+  // Create new role; POST http://localhost:8080/role/
+  {
+    "name": "ADMIN"
+  },
+
+  // PRODUCTS
+
+  // Get all products; GET http://localhost:8080/products/
+
+  // Get certain product by ID; GET http://localhost:8080/products/id
 
   // Create new product; POST http://localhost:8080/products/
   {
-
     "name": "product1",
     "energyValue": 100,
     "totalAmount": 100,
-    "ingredients": [{"id": 1}] // Tady seznam ingredientu ve tvaru [{"id": 1}, {"id": 2}, {"id": 3}...]. Staci poslat "id" ingredientu
+    "ingredients": [
+      {
+        "id": 1
+      }
+    ]
+    // Tady seznam ingredientu ve tvaru [{"id": 1}, {"id": 2}, {"id": 3}...]. Staci poslat "id" ingredientu
   },
+  // Update certain product by ID; PUT http://localhost:8080/products/id
+
+  // Delete certain product by ID; DELETE http://localhost:8080/products/id
+
+
+  //CARS
+
+  // Get all cars; GET http://localhost:8080/cars/
+
+  // Get certain car by ID; GET http://localhost:8080/cars/id
+
+  // Get cars orders; GET http://localhost:8080/cars/id/orders
+
+  // Create new car; POST http://localhost:8080/cars/
+  {
+    "dateofAcquire": "2-12-2013",
+    "type": "Mazda"
+  },
+  // Update certain car; PUT http://localhost:8080/cars/id
+  {
+    "dateofAcquire": "yyyy-mm-dd",
+    "type": "type"
+  },
+
+  // Delete certain car; DELETE http://localhost:8080/cars/id
+
+  // INGREDIENTS
+
+  // Get all ingredients; GET http://localhost:8080/ingredients/
+
+  // Get certain ingredient by ID; GET http://localhost:8080/ingredients/id
+
+  // Create new ingredient; POST http://localhost:8080/ingredients/
+  {
+    "name": "IngredientName",
+    "supplier": "SupplierName",
+    "dateOfManufacture": "yyyy-mm-dd",  //OPTINAL
+    "bestBefore": "yyyy-mm-dd", // OPTIONAL
+    "stored": 30
+  },
+
+  // Update certain ingredient by ID; PUT http://localhost:8080/ingredients/id
+
+  // Delete certain ingredient by ID; DELETE http://localhost:8080/ingredients/id
+
+
+  // ORDERS
 
   // Create new order; POST http://localhost:8080/orders/
   {
     "bakeryUser": {
       "id": 1
-    },  // Musi byt uzivatel, staci jejiho "id"
-    "items": [ // Seznam polozek v kosiku, viz; trida Item.java
+    },
+    // Musi byt uzivatel, staci jejiho "id"
+    "items": [
+      // Seznam polozek v kosiku, viz; trida Item.java
       {
-        "orderedAmount": 1, // Pocet kusu
-        "product": {  // Staci ID produktu
+        "orderedAmount": 1,
+        // Pocet kusu
+        "product": {
+          // Staci ID produktu
           "id": 1
         }
       },
@@ -45,6 +137,16 @@
       }
     ]
   }
+
+  // Get all orders; GET http://localhost:8080/orders/
+
+  // Get certain order by order ID; GET http://localhost:8080/orders/username/id
+
+  // Delete certain order by ID; DELETE http://localhost:8080/orders/id
+
+  // Update certain order by ID; PUT http://localhost:8080/orders/id
+
+  // Get order user; GET http://localhost:8080/orders/id/user
 
 
 ]
