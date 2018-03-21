@@ -36,7 +36,6 @@ public class BakeryUser extends ID {
 
 
 
-    @NotNull
     @Column(name = "phone_number")
     private String phoneNumber;
 

@@ -103,7 +103,7 @@ public class ProductController {
         }
         product.setName(details.getName());
         product.setTotalAmount(details.getTotalAmount());
-        product.setEnergyValue(details.getEnergyValue());
+        product.setPrice(details.getPrice());
 
         productRepository.save(product);
 

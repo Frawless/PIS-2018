@@ -18,12 +18,11 @@ public class Product extends ID{
     private String name;
 
 
-    @Column(name = "energy_value")
-    private String energyValue;
-
-
     @Column(name = "total_amount")
     private int totalAmount;
+
+    @Column(name = "price")
+    private int price;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
@@ -43,14 +42,6 @@ public class Product extends ID{
     )
     private Set<Ingredient> ingredients;
 
-
-    public String getEnergyValue() {
-        return energyValue;
-    }
-
-    public void setEnergyValue(String energyValue) {
-        this.energyValue = energyValue;
-    }
 
 
     public String getName() {
@@ -76,6 +67,16 @@ public class Product extends ID{
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public int getPrice()
+    {
+        return price;
+    }
+
+    public void setPrice(int price)
+    {
+        this.price = price;
     }
 
 

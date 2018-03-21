@@ -26,7 +26,7 @@
     "phoneNumber": "+420 66 66 66",
     "password": "password"
   },
-  // Delete certain user; DELETE http://localhost:8080/users/username
+  // Delete certain user; DELETE http://localhost:8080/users/id
 
   // Add user role; PUT http://localhost:8080/users/username/grand/role
   [
