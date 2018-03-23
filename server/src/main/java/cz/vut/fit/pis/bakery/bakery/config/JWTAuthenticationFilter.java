@@ -1,7 +1,7 @@
 package cz.vut.fit.pis.bakery.bakery.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.vut.fit.pis.bakery.bakery.model.BakeryUser;
+import cz.vut.fit.pis.bakery.bakery.model.User;
 import cz.vut.fit.pis.bakery.bakery.model.Role;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -12,14 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,9 +40,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException{
         try{
-            BakeryUser creds = new ObjectMapper().readValue(req.getInputStream(), BakeryUser.class);
+            User creds = new ObjectMapper().readValue(req.getInputStream(), User.class);
 
-            BakeryUser user = userRepository.findByUsername(creds.getUsername());
+            User user = userRepository.findByUsername(creds.getUsername());
             List<GrantedAuthority> authorities = user.getRoles().stream()
                     .map(Role::getName)
 //                    .map(r -> "ROLE_" + r)
@@ -69,7 +67,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 
         String token = Jwts.builder()
-                .setSubject(((User) auth.getPrincipal()).getUsername())
+                .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
                 .claim("roles", auth.getAuthorities())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())

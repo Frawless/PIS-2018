@@ -1,8 +1,7 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
-import cz.vut.fit.pis.bakery.bakery.model.BakeryUser;
+import cz.vut.fit.pis.bakery.bakery.model.User;
 import cz.vut.fit.pis.bakery.bakery.model.Role;
-import cz.vut.fit.pis.bakery.bakery.model.UsersOrder;
 import cz.vut.fit.pis.bakery.bakery.repository.RoleRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -44,21 +42,21 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     @GetMapping("/")
-    public List<BakeryUser> users(){
-        return (List<BakeryUser>) userRepository.findAll();
+    public List<User> users(){
+        return (List<User>) userRepository.findAll();
     }
 
     /**
      * Create new user.
      * Each user gets 'USER' authority when register.
-     * @param bakeryUser new user credentials
+     * @param User new user credentials
      * @return new created user.
      */
     @PostMapping("/sing-up")
-    public ResponseEntity<BakeryUser> createUser(@Valid @RequestBody BakeryUser bakeryUser){
+    public ResponseEntity<User> createUser(@Valid @RequestBody User User){
         List<Role> roles = new ArrayList<>();
 
-        BakeryUser user = userRepository.findByUsername(bakeryUser.getUsername());
+        User user = userRepository.findByUsername(User.getUsername());
 
         if (user != null){
             return ResponseEntity.badRequest().build();
@@ -66,9 +64,9 @@ public class UserController {
 
         roles.add(roleRepository.findOne("USER"));  // Add default role for each user
 
-        bakeryUser.setRoles(roles);
-        bakeryUser.setPassword(bCryptPasswordEncoder.encode(bakeryUser.getPassword())); // Encrypt password
-        return ResponseEntity.ok(userRepository.save(bakeryUser));
+        user.setRoles(roles);
+        user.setPassword(bCryptPasswordEncoder.encode(User.getPassword())); // Encrypt password
+        return ResponseEntity.ok(userRepository.save(User));
     }
 
     /**
@@ -78,42 +76,42 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE') or #principal.name == #username")
     @GetMapping("/{username}")
-    public ResponseEntity<BakeryUser> getUser(Principal principal, @PathVariable(value = "username") String username){
-        BakeryUser bakeryUser = userRepository.findByUsername(username);
+    public ResponseEntity<User> getUser(Principal principal, @PathVariable(value = "username") String username){
+        User user = userRepository.findByUsername(username);
 
-        if (bakeryUser == null){
+        if (user == null){
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok().body(bakeryUser);
+        return ResponseEntity.ok().body(user);
     }
 
 
     /**
      * Update user.
      * @param username Username
-     * @param bakeryUserDetails New information about user
+     * @param userDetails New information about user
      * @return Updated user
      */
     @PutMapping("/{username}")
     @PreAuthorize("hasAuthority('ADMIN') or #principal.name == #username")
-    public ResponseEntity<BakeryUser> update(Principal principal, @PathVariable(value = "username") String username, @Valid @RequestBody BakeryUser bakeryUserDetails){
-        BakeryUser bakeryUser = userRepository.findByUsername(username);
+    public ResponseEntity<User> update(Principal principal, @PathVariable(value = "username") String username, @Valid @RequestBody User userDetails){
+        User user = userRepository.findByUsername(username);
 
-        if (bakeryUser == null){
+        if (user == null){
             return ResponseEntity.notFound().build();
         }
 
-        bakeryUser.setName(bakeryUserDetails.getName());
-        bakeryUser.setSurname(bakeryUserDetails.getSurname());
-        bakeryUser.setEmail(bakeryUserDetails.getEmail());
-        bakeryUser.setPhoneNumber(bakeryUserDetails.getPhoneNumber());
+        user.setFirstname(userDetails.getFirstname());
+        user.setLastname(userDetails.getLastname());
+        user.setEmail(userDetails.getEmail());
+        user.setPhoneNumber(userDetails.getPhoneNumber());
 
-        bakeryUser.setPassword(bCryptPasswordEncoder.encode(bakeryUserDetails.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
 
-        BakeryUser updatedBakeryUser = userRepository.save(bakeryUser);
+        User updatedUser = userRepository.save(user);
 
-        return ResponseEntity.ok(updatedBakeryUser);
+        return ResponseEntity.ok(updatedUser);
     }
 
     /**
@@ -123,21 +121,21 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<BakeryUser> deleteUser(@PathVariable(value = "id") Long id){
-//        BakeryUser bakeryUser = userRepository.findByUsername(username);
-        BakeryUser bakeryUser = userRepository.findOne(id);
-        if (bakeryUser == null){
+    public ResponseEntity<User> deleteUser(@PathVariable(value = "id") Long id){
+//        User user = userRepository.findByUsername(username);
+        User user = userRepository.findOne(id);
+        if (user == null){
             return ResponseEntity.notFound().build();
         }
 
-        userRepository.delete(bakeryUser);
+        userRepository.delete(user);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{username}/grand/role")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<BakeryUser> grandRole(@PathVariable(name = "username") String username, @RequestBody List<Role> newRoles){
-        BakeryUser user = userRepository.findByUsername(username);
+    public ResponseEntity<User> grandRole(@PathVariable(name = "username") String username, @RequestBody List<Role> newRoles){
+        User user = userRepository.findByUsername(username);
 
         if (user == null){
             return ResponseEntity.notFound().build();

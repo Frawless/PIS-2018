@@ -36,8 +36,8 @@ public class OrderController {
      */
     @GetMapping("/")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public List<UsersOrder> orders() {
-        return (List<UsersOrder>) orderRepository.findAll();
+    public List<Order> orders() {
+        return (List<Order>) orderRepository.findAll();
     }
 
     /**
@@ -49,10 +49,10 @@ public class OrderController {
      */
     @GetMapping("/{username}/{orderId}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE') or #principal.name == #username")
-    public ResponseEntity<UsersOrder> getOrder(Principal principal
+    public ResponseEntity<Order> getOrder(Principal principal
             , @PathVariable(value = "username") String username
             , @PathVariable(value = "orderId") Long orderId){
-        UsersOrder order = orderRepository.findOne(orderId);
+        Order order = orderRepository.findOne(orderId);
 
         if (order == null){
             return ResponseEntity.notFound().build();
@@ -63,24 +63,24 @@ public class OrderController {
 
     /**
      * Create new order
-     * @param usersOrder information about order
+     * @param order information about order
      * @return Created order or fail
      */
     @PostMapping("/")
-    public UsersOrder createOrderForUser(@RequestBody UsersOrder usersOrder) {
-        BakeryUser user = userRepository.findOne(usersOrder.getBakeryUser().getId());
+    public Order createOrderForUser(@RequestBody Order order) {
+        User user = userRepository.findOne(order.getUser().getId());
 
         if (user == null){
             return null;
         }
 
         for (Item i:
-             usersOrder.getItems()) {
+             order.getItems()) {
             i.setProduct(productRepository.findOne(i.getProduct().getId()));
         }
 
-        usersOrder.setBakeryUser(user);
-        return orderRepository.save(usersOrder);
+        order.setUser(user);
+        return orderRepository.save(order);
     }
 
     /**
@@ -90,8 +90,8 @@ public class OrderController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UsersOrder> deleteOrder(@PathVariable(value = "id") Long id){
-        UsersOrder order = orderRepository.findOne(id);
+    public ResponseEntity<Order> deleteOrder(@PathVariable(value = "id") Long id){
+        Order order = orderRepository.findOne(id);
 
         if (order == null){
             return ResponseEntity.notFound().build();
@@ -109,8 +109,8 @@ public class OrderController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<UsersOrder> updateOrder(@PathVariable(value = "id") Long id, @Valid @RequestBody UsersOrder details){
-        UsersOrder order = orderRepository.findOne(id);
+    public ResponseEntity<Order> updateOrder(@PathVariable(value = "id") Long id, @Valid @RequestBody Order details){
+        Order order = orderRepository.findOne(id);
 
         if (order == null){
             return ResponseEntity.notFound().build();
@@ -121,8 +121,8 @@ public class OrderController {
             Product product = productRepository.findOne(i.getProduct().getId());
 
             if (details.getState() == State.READY){
-                if (product.getTotalAmount() >= i.getOrderedAmount()){
-                    productRepository.decrementProduct(product.getId(), i.getOrderedAmount());
+                if (product.getTotalAmount() >= i.getCountOrdered()){
+                    productRepository.decrementProduct(product.getId(), i.getCountOrdered());
                     product = productRepository.findOne(i.getProduct().getId());
                 }else {
                     return ResponseEntity.noContent().build();
@@ -133,10 +133,10 @@ public class OrderController {
         }
 
         order.setState(details.getState());
-        order.setBakeryUser(userRepository.findOne(details.getId()));
+        order.setUser(userRepository.findOne(details.getId()));
         order.setItems(details.getItems());
-        order.setOrderDate(details.getOrderDate());
-        order.setDelivery(details.getDelivery());
+        order.setCreateDate(details.getCreateDate());
+        //order.setExportDate(details.getExportDate());
 
         orderRepository.save(order);
 
@@ -146,11 +146,11 @@ public class OrderController {
 
     @GetMapping("/{id}/user")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<BakeryUser> getUserForOrder(@PathVariable(name = "id") Long id){
-        UsersOrder order = orderRepository.findOne(id);
+    public ResponseEntity<User> getUserForOrder(@PathVariable(name = "id") Long id){
+        Order order = orderRepository.findOne(id);
         if (order == null){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(order.getBakeryUser());
+        return ResponseEntity.ok().body(order.getUser());
     }
 }

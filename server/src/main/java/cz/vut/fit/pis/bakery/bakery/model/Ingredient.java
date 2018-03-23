@@ -21,15 +21,10 @@ public class Ingredient  extends ID{
     @Column(name = "supplier")
     private String supplier;
 
-    @Column(name = "date_of_manufacture")
-    private Date dateOfManufacture;
-
-    @Column(name = "besf_before")
-    private Date bestBefore;
-
     @NotNull
-    @Column(name = "stored")
-    private int stored;
+    @Column(name = "unit")
+    private String unit;
+
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -48,22 +43,6 @@ public class Ingredient  extends ID{
         this.supplier = supplier;
     }
 
-    public Date getDateOfManufacture() {
-        return dateOfManufacture;
-    }
-
-    public void setDateOfManufacture(Date dateOfManufacture) {
-        this.dateOfManufacture = dateOfManufacture;
-    }
-
-    public Date getBestBefore() {
-        return bestBefore;
-    }
-
-    public void setBestBefore(Date bestBefore) {
-        this.bestBefore = bestBefore;
-    }
-
     public String getName() {
         return name;
     }
@@ -72,16 +51,9 @@ public class Ingredient  extends ID{
         this.name = name;
     }
 
+    public String getUnit() { return unit; }
 
-    public int getStored() {
-        return stored;
-    }
-
-    public void setStored(int stored) {
-        this.stored = stored;
-    }
-
-
+    public void setUnit(String unit) { this.unit = unit; }
 
     public Set<Product> getProducts() {
         return products;

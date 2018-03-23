@@ -1,7 +1,7 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
 import cz.vut.fit.pis.bakery.bakery.model.Car;
-import cz.vut.fit.pis.bakery.bakery.model.UsersOrder;
+import cz.vut.fit.pis.bakery.bakery.model.Order;
 import cz.vut.fit.pis.bakery.bakery.repository.CarRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,7 @@ public class CarController {
      */
     @GetMapping("/{id}/orders")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<List<UsersOrder>> getOrdersOfCar(@PathVariable(value = "id") Long id){
+    public ResponseEntity<List<Order>> getOrdersOfCar(@PathVariable(value = "id") Long id){
         Car car = carRepository.findOne(id);
 
         if (car == null){
@@ -102,8 +102,8 @@ public class CarController {
         }
 
         if (!details.getOrders().isEmpty()){
-            List<UsersOrder> orders = details.getOrders().stream()  //Find all orders
-                    .map(UsersOrder::getId)
+            List<Order> orders = details.getOrders().stream()  //Find all orders
+                    .map(Order::getId)
                     .map(orderRepository::findOne)
                     .filter(Objects::nonNull)
                     .filter(ord -> ord.getCar() == null)
@@ -111,7 +111,7 @@ public class CarController {
 
             if (!orders.isEmpty()){
                 // For each order set car should deliver it
-                for (UsersOrder ordr:
+                for (Order ordr:
                         orders) {
                     ordr.setCar(car);
                 }
@@ -121,13 +121,13 @@ public class CarController {
 
         }else{
 
-            for (UsersOrder ord:
+            for (Order ord:
                  car.getOrders()) {
                 ord.setCar(null);
             }
             car.setOrders(new ArrayList<>());
         }
-        car.setDateofAcquire(details.getDateofAcquire());
+        car.setDateAdd(details.getDateAdd());
         car.setType(details.getType());
 
         carRepository.save(car);

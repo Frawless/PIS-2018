@@ -4,13 +4,15 @@ package cz.vut.fit.pis.bakery.bakery.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
 @Table(name = "role")
-public class Role {
+public class Role extends ID{
 
-    @Id
+    @NotNull
+    @Column(name = "name")
     private String name;
 
     @ManyToMany(
@@ -19,7 +21,7 @@ public class Role {
             mappedBy = "roles"
     )
     @JsonIgnore
-    private List<BakeryUser> users;
+    private List<User> users;
 
 
     @OneToMany
@@ -31,11 +33,11 @@ public class Role {
         this.name = name;
     }
 
-    public List<BakeryUser> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<BakeryUser> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 }

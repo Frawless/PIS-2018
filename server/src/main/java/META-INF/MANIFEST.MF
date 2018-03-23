@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: cz.vut.fit.pis.bakery.bakery
+Main-Class: cz.vut.fit.pis.bakery.bakery.BakeryApplication
+

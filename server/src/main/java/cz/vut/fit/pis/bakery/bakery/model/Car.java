@@ -3,6 +3,7 @@ package cz.vut.fit.pis.bakery.bakery.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,23 +12,25 @@ import java.util.List;
 @Table(name = "car")
 public class Car extends ID {
 
-    @Column(name = "date_of_acquire")
-    private Date dateofAcquire;
+    @NotNull
+    @Column(name = "date_add")
+    private Date dateAdd;
 
+    @NotNull
     @Column(name = "type")
     private String type;
 
 
     @JsonManagedReference(value = "orders-car")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "car", cascade = CascadeType.ALL)
-    private List<UsersOrder> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
-    public Date getDateofAcquire() {
-        return dateofAcquire;
+    public Date getDateAdd() {
+        return dateAdd;
     }
 
-    public void setDateofAcquire(Date dateofAcquire) {
-        this.dateofAcquire = dateofAcquire;
+    public void setDateAdd(Date dateAdd) {
+        this.dateAdd = dateAdd;
     }
 
     public String getType() {
@@ -38,11 +41,11 @@ public class Car extends ID {
         this.type = type;
     }
 
-    public List<UsersOrder> getOrders() {
+    public List<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<UsersOrder> orders) {
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 }

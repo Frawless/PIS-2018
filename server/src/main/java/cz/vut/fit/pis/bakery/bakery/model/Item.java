@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 @Entity
 @Table(name = "item")
@@ -15,27 +14,28 @@ public class Item extends ID {
 
     @Min(1)
     @Max(10)
-    @Column(name = "ordered_amount")
-    private int orderedAmount;
+    @NotNull
+    @Column(name = "count_ordered")
+    private int countOrdered;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "product")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @JsonBackReference(value = "orders-item")
     @ManyToOne
     @JoinColumn(name = "order_id")
     @NotNull
-    private UsersOrder order;
+    private Order order;
 
 
-    public int getOrderedAmount() {
-        return orderedAmount;
+    public int getCountOrdered() {
+        return countOrdered;
     }
 
-    public void setOrderedAmount(int orderedAmount) {
-        this.orderedAmount = orderedAmount;
+    public void setCountOrdered(int countOrdered) {
+        this.countOrdered = countOrdered;
     }
 
 
@@ -47,11 +47,11 @@ public class Item extends ID {
         this.product = product;
     }
 
-    public UsersOrder getOrder() {
+    public Order getOrder() {
         return order;
     }
 
-    public void setOrder(UsersOrder order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 }

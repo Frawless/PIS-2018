@@ -1,6 +1,6 @@
 package cz.vut.fit.pis.bakery.bakery;
 
-import cz.vut.fit.pis.bakery.bakery.model.BakeryUser;
+import cz.vut.fit.pis.bakery.bakery.model.User;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -9,13 +9,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -46,10 +44,10 @@ public class UserControllerTest {
 //    {
 //        // uzivatel uz existuje => 400
 //
-//        BakeryUser bakeryUser = new BakeryUser();
-//        bakeryUser.setName("Arya");
+//        User bakeryUser = new User();
+//        bakeryUser.setFirstname("Arya");
 //        bakeryUser.setPassword("shit");
-//        bakeryUser.setSurname("Stark");
+//        bakeryUser.setLastname("Stark");
 //        bakeryUser.setUsername("Stark");
 //        bakeryUser.setEmail("aS@manyFacedGods.com");
 //        bakeryUser.setPhoneNumber("");
@@ -73,12 +71,12 @@ public class UserControllerTest {
     @Test
     public void login() throws Exception
     {
-        BakeryUser bakeryUser = new BakeryUser();
+        User user = new User();
         Auth auth = new Auth();
         auth.username = "Kocka";
         auth.password = "shit";
-        bakeryUser.setPassword("shit");
-        bakeryUser.setUsername("Kocka");
+        user.setPassword("shit");
+        user.setUsername("Kocka");
 
         String jsonContent;
         try {

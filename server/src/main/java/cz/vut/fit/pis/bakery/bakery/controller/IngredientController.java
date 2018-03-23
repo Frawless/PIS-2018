@@ -69,11 +69,9 @@ public class IngredientController {
             return ResponseEntity.notFound().build();
         }
 
-        ingredient.setBestBefore(details.getBestBefore());
-        ingredient.setDateOfManufacture(details.getDateOfManufacture());
-        ingredient.setStored(details.getStored());
         ingredient.setSupplier(details.getSupplier());
         ingredient.setName(details.getName());
+        ingredient.setUnit(details.getUnit());
 
         ingredientRepository.save(ingredient);
 
