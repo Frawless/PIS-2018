@@ -1,3 +1,3 @@
-INSERT INTO role (firstname) VALUES ('USER');
-INSERT INTO role (firstname) VALUES ('ADMIN');
-INSERT INTO role (firstname) VALUES ('EMPLOYEE');
+INSERT INTO role (name) VALUES ('USER');
+INSERT INTO role (name) VALUES ('ADMIN');
+INSERT INTO role (name) VALUES ('EMPLOYEE');

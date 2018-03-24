@@ -62,10 +62,10 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
 
-        roles.add(roleRepository.findOne("USER"));  // Add default role for each user
+        roles.add(roleRepository.findByName("USER"));  // Add default role for each user
 
-        user.setRoles(roles);
-        user.setPassword(bCryptPasswordEncoder.encode(User.getPassword())); // Encrypt password
+        User.setRoles(roles);
+        User.setPassword(bCryptPasswordEncoder.encode(User.getPassword())); // Encrypt password
         return ResponseEntity.ok(userRepository.save(User));
     }
 
@@ -106,6 +106,7 @@ public class UserController {
         user.setLastname(userDetails.getLastname());
         user.setEmail(userDetails.getEmail());
         user.setPhoneNumber(userDetails.getPhoneNumber());
+        user.setAddress(userDetails.getAddress());
 
         user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
 

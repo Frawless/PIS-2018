@@ -35,6 +35,9 @@ public class User extends ID {
     private String email;
 
 
+    @Column(name = "address")
+    private String address;
+
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -118,6 +121,14 @@ public class User extends ID {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
 }
