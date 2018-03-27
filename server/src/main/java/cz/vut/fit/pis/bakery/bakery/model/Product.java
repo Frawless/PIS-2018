@@ -24,6 +24,9 @@ public class Product extends ID{
     @Column(name = "price")
     private int price;
 
+    @Column(name = "image")
+    private byte[] image;
+
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
     private List<Item> items;
@@ -86,5 +89,13 @@ public class Product extends ID{
 
     public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public byte[] getImage() {
+        return image;
     }
 }

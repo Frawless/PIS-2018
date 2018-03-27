@@ -1,7 +1,9 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
+import cz.vut.fit.pis.bakery.bakery.model.Address;
 import cz.vut.fit.pis.bakery.bakery.model.User;
 import cz.vut.fit.pis.bakery.bakery.model.Role;
+import cz.vut.fit.pis.bakery.bakery.repository.AddressRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.RoleRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +31,15 @@ public class UserController {
 
     private final RoleRepository roleRepository;
 
+    private final AddressRepository addressRepository;
+
     @Autowired
-    public UserController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
+    public UserController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository,
+                          AddressRepository addressRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
+        this.addressRepository = addressRepository;
     }
 
     /**
@@ -55,6 +61,7 @@ public class UserController {
     @PostMapping("/sing-up")
     public ResponseEntity<User> createUser(@Valid @RequestBody User User){
         List<Role> roles = new ArrayList<>();
+        List<User> users = new ArrayList<>();
 
         User user = userRepository.findByUsername(User.getUsername());
 
@@ -64,10 +71,43 @@ public class UserController {
 
         roles.add(roleRepository.findByName("USER"));  // Add default role for each user
 
+
+        Address userAddress = User.getAddress();
+        Address savedAddress = null;
+        if (userAddress != null)
+        {
+            Address address = addressRepository.findAddressByCityAndPscAndStreetNameAndStreetNumber(userAddress.getCity(),
+                    userAddress.getPsc(), userAddress.getStreetName(), userAddress.getStreetNumber());
+
+
+            if (address == null)
+            {
+                address = userAddress;
+                address.setUser(User);
+            }
+
+            savedAddress = addressRepository.save(address);
+        }
+
+
+
+
         User.setRoles(roles);
+        User.setAddress(savedAddress);
         User.setPassword(bCryptPasswordEncoder.encode(User.getPassword())); // Encrypt password
         return ResponseEntity.ok(userRepository.save(User));
     }
+
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE') or #principal.name == #username")
+//    @GetMapping("/{username}/address")
+//    public ResponseEntity<Address> getAddress(Principal principal, @PathVariable(value = "username") String username)
+//    {
+//        User user = userRepository.findByUsername(username);
+//        Address address = addressRepository.findOne(user.getAddress().getId());
+//
+//        return ResponseEntity.ok().body(address);
+//
+//    }
 
     /**
      *∂∂
@@ -102,11 +142,31 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
+        Address newAddress = userDetails.getAddress();
+        Address updatedAddress = null;
+        if (newAddress != null)
+        {
+            Address address = addressRepository.findAddressByCityAndPscAndStreetNameAndStreetNumber(newAddress.getCity(),
+                    newAddress.getPsc(), newAddress.getStreetName(), newAddress.getStreetNumber());
+
+            if (address == null)
+            {
+//            List<User> users = new ArrayList<>();
+//            users.add(user);
+                address = userDetails.getAddress();
+                address.setUser(user);
+
+            }
+
+            updatedAddress = addressRepository.save(address);
+        }
+
+
         user.setFirstname(userDetails.getFirstname());
         user.setLastname(userDetails.getLastname());
         user.setEmail(userDetails.getEmail());
         user.setPhoneNumber(userDetails.getPhoneNumber());
-        user.setAddress(userDetails.getAddress());
+        user.setAddress(updatedAddress);
 
         user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
 

@@ -35,10 +35,6 @@ public class User extends ID {
     private String email;
 
 
-    @Column(name = "address")
-    private String address;
-
-
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -56,6 +52,11 @@ public class User extends ID {
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     private List<Role> roles;
+
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
+
 
 
     public String getFirstname() {
@@ -123,11 +124,11 @@ public class User extends ID {
         this.roles = roles;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 
