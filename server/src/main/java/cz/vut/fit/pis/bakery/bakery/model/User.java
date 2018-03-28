@@ -53,8 +53,10 @@ public class User extends ID {
     )
     private List<Role> roles;
 
-    @OneToOne
-    @JoinColumn(name = "address_id")
+
+//    @OneToOne
+//    @JoinColumn(name = "address_id")
+    @Embedded
     private Address address;
 
 

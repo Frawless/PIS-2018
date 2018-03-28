@@ -1,6 +1,7 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
 import cz.vut.fit.pis.bakery.bakery.model.*;
+import cz.vut.fit.pis.bakery.bakery.repository.CarRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.OrderRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.ProductRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
@@ -23,11 +24,15 @@ public class OrderController {
 
     private final ProductRepository productRepository;
 
+    private final CarRepository carRepository;
+
     @Autowired
-    public OrderController(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public OrderController(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository,
+                           CarRepository carRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.carRepository = carRepository;
     }
 
     /**
@@ -133,9 +138,18 @@ public class OrderController {
         }
 
         order.setState(details.getState());
-        order.setUser(userRepository.findOne(details.getId()));
+        order.setUser(userRepository.findOne(details.getUser().getId()));
         order.setItems(details.getItems());
         order.setCreateDate(details.getCreateDate());
+        if (details.getCar() != null)
+        {
+            order.setCar(carRepository.findOne(details.getCar().getId()));
+        }
+        else
+        {
+            order.setCar(details.getCar());
+        }
+
         //order.setExportDate(details.getExportDate());
 
         orderRepository.save(order);

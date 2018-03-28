@@ -33,7 +33,6 @@ public class Order extends ID{
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonBackReference(value = "orders-car")
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;

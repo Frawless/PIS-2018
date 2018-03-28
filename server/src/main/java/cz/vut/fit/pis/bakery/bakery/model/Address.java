@@ -1,15 +1,12 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
-@Entity
-@Table(name = "address")
-public class Address extends ID {
+@Embeddable
+public class Address {
 
     @NotNull
     @Column(name = "city")
@@ -27,9 +24,9 @@ public class Address extends ID {
     @Column(name = "streetNumber")
     private int streetNumber;
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "address", cascade = CascadeType.ALL)
-    private User user;
+//    @JsonIgnore
+//    @OneToOne(fetch = FetchType.LAZY, mappedBy = "address", cascade = CascadeType.ALL)
+//    private User user;
 
     public String getCity() {
         return city;
@@ -63,11 +60,11 @@ public class Address extends ID {
         this.streetName = streetName;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 }
