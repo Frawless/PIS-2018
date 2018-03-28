@@ -53,29 +53,25 @@ public class UserController {
     /**
      * Create new user.
      * Each user gets 'USER' authority when register.
-     * @param User new user credentials
+     * @param user new user credentials
      * @return new created user.
      */
     @PostMapping("/sing-up")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User User){
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user){
         List<Role> roles = new ArrayList<>();
-        List<User> users = new ArrayList<>();
 
-        User user = userRepository.findByUsername(User.getUsername());
+        User user1 = userRepository.findByUsername(user.getUsername());
 
-        if (user != null){
+        if (user1 != null){
             return ResponseEntity.badRequest().build();
         }
 
         roles.add(roleRepository.findByName("USER"));  // Add default role for each user
 
-
-        Address address = User.getAddress();
-
-        User.setRoles(roles);
-        User.setAddress(address);
-        User.setPassword(bCryptPasswordEncoder.encode(User.getPassword())); // Encrypt password
-        return ResponseEntity.ok(userRepository.save(User));
+        user.setRoles(roles);
+        user.setAddress(user.getAddress());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword())); // Encrypt password
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
     /**
@@ -111,13 +107,11 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        Address address = userDetails.getAddress();
-
         user.setFirstname(userDetails.getFirstname());
         user.setLastname(userDetails.getLastname());
         user.setEmail(userDetails.getEmail());
         user.setPhoneNumber(userDetails.getPhoneNumber());
-        user.setAddress(address);
+        user.setAddress(userDetails.getAddress());
 
         user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
 

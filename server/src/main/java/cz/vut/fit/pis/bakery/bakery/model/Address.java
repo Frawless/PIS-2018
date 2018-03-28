@@ -1,7 +1,5 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -23,10 +21,6 @@ public class Address {
     @NotNull
     @Column(name = "streetNumber")
     private int streetNumber;
-
-//    @JsonIgnore
-//    @OneToOne(fetch = FetchType.LAZY, mappedBy = "address", cascade = CascadeType.ALL)
-//    private User user;
 
     public String getCity() {
         return city;
@@ -60,11 +54,4 @@ public class Address {
         this.streetName = streetName;
     }
 
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
 }

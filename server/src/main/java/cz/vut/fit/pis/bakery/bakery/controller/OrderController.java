@@ -139,7 +139,6 @@ public class OrderController {
 
         order.setState(details.getState());
         order.setUser(userRepository.findOne(details.getUser().getId()));
-        order.setItems(details.getItems());
         order.setCreateDate(details.getCreateDate());
         if (details.getCar() != null)
         {

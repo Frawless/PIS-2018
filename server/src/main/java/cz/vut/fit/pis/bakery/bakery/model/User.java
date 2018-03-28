@@ -2,7 +2,6 @@ package cz.vut.fit.pis.bakery.bakery.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.Email;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -53,12 +52,8 @@ public class User extends ID {
     )
     private List<Role> roles;
 
-
-//    @OneToOne
-//    @JoinColumn(name = "address_id")
     @Embedded
     private Address address;
-
 
 
     public String getFirstname() {
@@ -100,7 +95,6 @@ public class User extends ID {
     public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
-
 
     public String getPassword() {
         return password;
