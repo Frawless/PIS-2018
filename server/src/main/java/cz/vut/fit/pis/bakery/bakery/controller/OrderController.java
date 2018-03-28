@@ -58,6 +58,21 @@ public class OrderController {
             , @PathVariable(value = "username") String username
             , @PathVariable(value = "orderId") Long orderId){
         Order order = orderRepository.findOne(orderId);
+        User user = userRepository.findByUsername(username);
+        if (order == null || user == null){
+            return ResponseEntity.notFound().build();
+        }
+        if (order == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(order);
+    }
+
+    @GetMapping("/{orderId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<Order> getOrder(@PathVariable(value = "orderId") Long orderId){
+        Order order = orderRepository.findOne(orderId);
 
         if (order == null){
             return ResponseEntity.notFound().build();
@@ -94,7 +109,7 @@ public class OrderController {
      * @return  OK or FAIL
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<Order> deleteOrder(@PathVariable(value = "id") Long id){
         Order order = orderRepository.findOne(id);
 
@@ -149,7 +164,7 @@ public class OrderController {
             order.setCar(details.getCar());
         }
 
-        //order.setExportDate(details.getExportDate());
+        order.setExportDate(details.getExportDate());
 
         orderRepository.save(order);
 
