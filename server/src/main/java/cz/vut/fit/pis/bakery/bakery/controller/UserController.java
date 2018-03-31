@@ -113,7 +113,11 @@ public class UserController {
         user.setPhoneNumber(userDetails.getPhoneNumber());
         user.setAddress(userDetails.getAddress());
 
-        user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
+        if (!userDetails.getPassword().equals(""))
+        {
+            user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
+        }
+
 
         User updatedUser = userRepository.save(user);
 
