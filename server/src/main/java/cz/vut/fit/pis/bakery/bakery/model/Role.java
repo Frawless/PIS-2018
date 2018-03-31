@@ -15,12 +15,8 @@ public class Role extends ID{
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            mappedBy = "roles"
-    )
     @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
     private List<User> users;
 
 

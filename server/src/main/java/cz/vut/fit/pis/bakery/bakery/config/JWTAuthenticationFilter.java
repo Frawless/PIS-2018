@@ -18,6 +18,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,11 +44,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             User creds = new ObjectMapper().readValue(req.getInputStream(), User.class);
 
             User user = userRepository.findByUsername(creds.getUsername());
-            List<GrantedAuthority> authorities = user.getRoles().stream()
-                    .map(Role::getName)
-//                    .map(r -> "ROLE_" + r)
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
 
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     creds.getUsername(),

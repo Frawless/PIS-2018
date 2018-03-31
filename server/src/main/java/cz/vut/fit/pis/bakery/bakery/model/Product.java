@@ -21,7 +21,7 @@ public class Product extends ID{
     private int totalAmount;
 
     @Column(name = "price")
-    private int price;
+    private float price;
 
     @Column(name = "image")
     private byte[] image;
@@ -71,12 +71,12 @@ public class Product extends ID{
         this.items = items;
     }
 
-    public int getPrice()
+    public float getPrice()
     {
         return price;
     }
 
-    public void setPrice(int price)
+    public void setPrice(float price)
     {
         this.price = price;
     }

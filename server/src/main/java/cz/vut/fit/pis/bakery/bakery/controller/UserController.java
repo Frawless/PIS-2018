@@ -58,7 +58,6 @@ public class UserController {
      */
     @PostMapping("/sing-up")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user){
-        List<Role> roles = new ArrayList<>();
 
         User user1 = userRepository.findByUsername(user.getUsername());
 
@@ -66,9 +65,7 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
 
-        roles.add(roleRepository.findByName("USER"));  // Add default role for each user
-
-        user.setRoles(roles);
+        user.setRole(roleRepository.findByName("USER"));
         user.setAddress(user.getAddress());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword())); // Encrypt password
         return ResponseEntity.ok(userRepository.save(user));
@@ -144,23 +141,21 @@ public class UserController {
 
     @PutMapping("/{username}/grand/role")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<User> grandRole(@PathVariable(name = "username") String username, @RequestBody List<Role> newRoles){
+    public ResponseEntity<User> grandRole(@PathVariable(name = "username") String username, @RequestBody Role newRole){
         User user = userRepository.findByUsername(username);
 
         if (user == null){
             return ResponseEntity.notFound().build();
         }
 
-        if (!newRoles.isEmpty()){
+        Role role = roleRepository.findByName(newRole.getName());
 
-            List<Role> roles = newRoles.stream()
-                    .map(Role::getName)
-                    .map(roleRepository::findOne)
-                    .collect(Collectors.toList());
-            user.setRoles(roles);
-        }else {
-            user.setRoles(new ArrayList<>());
+        // pokud se zadana role v databazi nenasla, tak neaktualizovat
+        if (role != null)
+        {
+            user.setRole(role);
         }
+
 
         return ResponseEntity.ok(userRepository.save(user));
     }
