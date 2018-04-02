@@ -1,6 +1,7 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
 import cz.vut.fit.pis.bakery.bakery.model.*;
+import cz.vut.fit.pis.bakery.bakery.repository.CarRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.OrderRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.ProductRepository;
 import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
@@ -23,11 +24,15 @@ public class OrderController {
 
     private final ProductRepository productRepository;
 
+    private final CarRepository carRepository;
+
     @Autowired
-    public OrderController(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public OrderController(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository,
+                           CarRepository carRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.carRepository = carRepository;
     }
 
     /**
@@ -52,6 +57,21 @@ public class OrderController {
     public ResponseEntity<Order> getOrder(Principal principal
             , @PathVariable(value = "username") String username
             , @PathVariable(value = "orderId") Long orderId){
+        Order order = orderRepository.findOne(orderId);
+        User user = userRepository.findByUsername(username);
+        if (order == null || user == null){
+            return ResponseEntity.notFound().build();
+        }
+        if (order == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(order);
+    }
+
+    @GetMapping("/{orderId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<Order> getOrder(@PathVariable(value = "orderId") Long orderId){
         Order order = orderRepository.findOne(orderId);
 
         if (order == null){
@@ -89,7 +109,7 @@ public class OrderController {
      * @return  OK or FAIL
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<Order> deleteOrder(@PathVariable(value = "id") Long id){
         Order order = orderRepository.findOne(id);
 
@@ -133,10 +153,18 @@ public class OrderController {
         }
 
         order.setState(details.getState());
-        order.setUser(userRepository.findOne(details.getId()));
-        order.setItems(details.getItems());
+        order.setUser(userRepository.findOne(details.getUser().getId()));
         order.setCreateDate(details.getCreateDate());
-        //order.setExportDate(details.getExportDate());
+        if (details.getCar() != null)
+        {
+            order.setCar(carRepository.findOne(details.getCar().getId()));
+        }
+        else
+        {
+            order.setCar(details.getCar());
+        }
+
+        order.setExportDate(details.getExportDate());
 
         orderRepository.save(order);
 

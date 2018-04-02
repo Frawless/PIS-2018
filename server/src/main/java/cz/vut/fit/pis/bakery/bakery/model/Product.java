@@ -1,7 +1,6 @@
 package cz.vut.fit.pis.bakery.bakery.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,7 +21,10 @@ public class Product extends ID{
     private int totalAmount;
 
     @Column(name = "price")
-    private int price;
+    private float price;
+
+    @Column(name = "image")
+    private byte[] image;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
@@ -69,12 +71,12 @@ public class Product extends ID{
         this.items = items;
     }
 
-    public int getPrice()
+    public float getPrice()
     {
         return price;
     }
 
-    public void setPrice(int price)
+    public void setPrice(float price)
     {
         this.price = price;
     }
@@ -86,5 +88,13 @@ public class Product extends ID{
 
     public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public byte[] getImage() {
+        return image;
     }
 }

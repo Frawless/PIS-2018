@@ -5,12 +5,19 @@
 
   // Create new user; POST http://localhost:8080/users/sing-up
   {
-    "name": "name",
-    "surname": "surname",
+    "firstname": "firstname",
+    "lastname": "lastname",
     "username": "username",
     "email": "mail@mail.com",
     "phoneNumber": "+420 66 66 66",
-    "password": "password"
+    "password": "password",
+    "address" :
+    {
+      "city": "Brno",
+      "psc": "61200",
+      "streetNumber": "12",
+      "streetName": "Zobi"
+    }
   },
 
   // Get all users; GET http://localhost:8080/users/
@@ -19,12 +26,19 @@
 
   // Update certain user; PUT http://localhost:8080/users/username
   {
-    "name": "name",
-    "surname": "surname",
+    "firstname": "firstname",
+    "lastname": "lastname",
     "username": "username",
     "email": "mail@mail.com",
     "phoneNumber": "+420 66 66 66",
-    "password": "password"
+    "password": "password",
+    "address" :
+    {
+      "city": "Brno",
+      "psc": "61200",
+      "streetNumber": "12",
+      "streetName": "Zobi"
+    }
   },
   // Delete certain user; DELETE http://localhost:8080/users/id
 
@@ -58,6 +72,7 @@
     "name": "product1",
     "energyValue": 100,
     "totalAmount": 100,
+    "image": "",
     "ingredients": [
       {
         "id": 1
