@@ -7,6 +7,7 @@ import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -44,8 +45,20 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             User creds = new ObjectMapper().readValue(req.getInputStream(), User.class);
 
             User user = userRepository.findByUsername(creds.getUsername());
+
+            if (user == null)
+            {
+                throw new BadCredentialsException("User does not exists!");
+            }
+
             List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
+
+            String roleName = null;
+            if (user.getRole() != null)
+            {
+                roleName = user.getRole().getName();
+            }
+            authorities.add(new SimpleGrantedAuthority(roleName));
 
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     creds.getUsername(),

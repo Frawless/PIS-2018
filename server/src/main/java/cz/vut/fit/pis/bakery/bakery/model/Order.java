@@ -43,6 +43,11 @@ public class Order extends ID{
     private List<Item> items;
 
 
+    @NotNull
+    @Embedded
+    private Address address;
+
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -85,5 +90,13 @@ public class Order extends ID{
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
