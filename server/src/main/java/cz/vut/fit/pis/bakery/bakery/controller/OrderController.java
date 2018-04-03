@@ -87,7 +87,7 @@ public class OrderController {
      * @return Created order or fail
      */
     @PostMapping("/")
-    public Order createOrderForUser(@RequestBody Order order) {
+    public Order createOrderForUser(@Valid @RequestBody Order order) {
         User user = userRepository.findOne(order.getUser().getId());
 
         if (user == null){
@@ -165,7 +165,7 @@ public class OrderController {
         }
 
         order.setExportDate(details.getExportDate());
-
+        order.setAddress(details.getAddress());
         orderRepository.save(order);
 
 
