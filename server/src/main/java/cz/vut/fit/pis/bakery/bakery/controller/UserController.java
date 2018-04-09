@@ -115,10 +115,7 @@ public class UserController {
             user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
         }
 
-
-        User updatedUser = userRepository.save(user);
-
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
     /**

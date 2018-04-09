@@ -62,9 +62,9 @@ public class OrderController {
         if (order == null || user == null){
             return ResponseEntity.notFound().build();
         }
-        if (order == null){
-            return ResponseEntity.notFound().build();
-        }
+//        if (order == null){
+//            return ResponseEntity.notFound().build();
+//        }
 
         return ResponseEntity.ok().body(order);
     }
@@ -87,20 +87,25 @@ public class OrderController {
      * @return Created order or fail
      */
     @PostMapping("/")
-    public Order createOrderForUser(@Valid @RequestBody Order order) {
+    public ResponseEntity<Order> createOrderForUser(@Valid @RequestBody Order order) {
         User user = userRepository.findOne(order.getUser().getId());
 
         if (user == null){
-            return null;
+            return ResponseEntity.notFound().build();
         }
 
-        for (Item i:
-             order.getItems()) {
-            i.setProduct(productRepository.findOne(i.getProduct().getId()));
+        for (Item i: order.getItems())
+        {
+            Product product = productRepository.findOne(i.getProduct().getId());
+            if (product == null)
+            {
+                return ResponseEntity.badRequest().build();
+            }
+            i.setProduct(product);
         }
 
         order.setUser(user);
-        return orderRepository.save(order);
+        return ResponseEntity.ok().body(orderRepository.save(order));
     }
 
     /**
@@ -140,6 +145,11 @@ public class OrderController {
                 details.getItems()) {
             Product product = productRepository.findOne(i.getProduct().getId());
 
+            if (product == null)
+            {
+                return ResponseEntity.badRequest().build();
+            }
+
             if (details.getState() == State.READY){
                 if (product.getTotalAmount() >= i.getCountOrdered()){
                     productRepository.decrementProduct(product.getId(), i.getCountOrdered());
@@ -153,7 +163,12 @@ public class OrderController {
         }
 
         order.setState(details.getState());
-        order.setUser(userRepository.findOne(details.getUser().getId()));
+        User user = userRepository.findOne(details.getUser().getId());
+        if (user == null)
+        {
+            return ResponseEntity.badRequest().build();
+        }
+        order.setUser(user);
         order.setCreateDate(details.getCreateDate());
         if (details.getCar() != null)
         {
