@@ -13,7 +13,7 @@ public class Item extends ID {
 
 
     @Min(1)
-    @Max(10)
+//    @Max(10)
     @NotNull
     @Column(name = "count_ordered")
     private int countOrdered;

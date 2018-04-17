@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -104,6 +106,10 @@ public class OrderController {
             i.setProduct(product);
         }
 
+        order.setState(State.IN_PROCESS);
+
+        order.setCreateDate(Calendar.getInstance().getTime());
+
         order.setUser(user);
         return ResponseEntity.ok().body(orderRepository.save(order));
     }
@@ -162,6 +168,10 @@ public class OrderController {
 
         }
 
+        if (details.getState() == null)
+        {
+            return ResponseEntity.badRequest().build();
+        }
         order.setState(details.getState());
         User user = userRepository.findOne(details.getUser().getId());
         if (user == null)

@@ -14,7 +14,6 @@ import java.util.List;
 @Table(name = "\"order\"")
 public class Order extends ID{
 
-    @NotNull
     @Column(name = "createdate")
     private Date createDate;
 
@@ -22,7 +21,7 @@ public class Order extends ID{
     @Column(name = "exportdate")
     private Date exportDate;
 
-    @NotNull
+
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private State state = State.ACCEPTED;
