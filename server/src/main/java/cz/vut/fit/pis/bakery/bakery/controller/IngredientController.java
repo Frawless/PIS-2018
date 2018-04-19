@@ -71,7 +71,6 @@ public class IngredientController {
 
         ingredient.setSupplier(details.getSupplier());
         ingredient.setName(details.getName());
-        ingredient.setUnit(details.getUnit());
 
         ingredientRepository.save(ingredient);
 

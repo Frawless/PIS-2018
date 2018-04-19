@@ -103,6 +103,18 @@ public class OrderController {
             {
                 return ResponseEntity.badRequest().build();
             }
+            if (product.getTotalAmount() >= i.getCountOrdered())
+            {
+                productRepository.decrementProduct(product.getId(), i.getCountOrdered());
+                product = productRepository.findOne(i.getProduct().getId());
+            }
+
+            else
+            {
+                return ResponseEntity.noContent().build();
+            }
+
+
             i.setProduct(product);
         }
 
@@ -126,6 +138,19 @@ public class OrderController {
 
         if (order == null){
             return ResponseEntity.notFound().build();
+        }
+
+        for (Item i: order.getItems())
+        {
+            Product product = productRepository.findOne(i.getProduct().getId());
+            if (product == null)
+            {
+                return ResponseEntity.badRequest().build();
+            }
+
+            productRepository.incrementProduct(product.getId(),i.getCountOrdered());
+
+            i.setProduct(product);
         }
 
         orderRepository.delete(id);

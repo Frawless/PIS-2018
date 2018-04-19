@@ -21,11 +21,6 @@ public class Ingredient  extends ID{
     @Column(name = "supplier")
     private String supplier;
 
-    @NotNull
-    @Column(name = "unit")
-    private String unit;
-
-
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -50,10 +45,6 @@ public class Ingredient  extends ID{
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getUnit() { return unit; }
-
-    public void setUnit(String unit) { this.unit = unit; }
 
     public Set<Product> getProducts() {
         return products;
