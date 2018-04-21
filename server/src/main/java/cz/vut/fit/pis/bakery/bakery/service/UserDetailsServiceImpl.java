@@ -29,7 +29,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userRepository.findByUsername(username);
-        System.out.println("User: " + username);
 
         if (user == null){
             System.out.println("Not found");
@@ -50,7 +49,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         authorities.add(new SimpleGrantedAuthority(roleName));
         
-        System.out.print("authorities :"+authorities);
         return authorities;
     }
 
