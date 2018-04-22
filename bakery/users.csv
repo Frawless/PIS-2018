@@ -1,0 +1,6 @@
+user, password,role
+admin, admin, admin
+novak, jannovak,user
+novotny, petrnovotny,user
+svoboda,dansvoboda,employee
+kucera,ondrejkucera,employee
