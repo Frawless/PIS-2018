@@ -132,5 +132,5 @@ INSERT INTO "user" (id, city, psc, street_name,
                     street_number, email, firstname,
                     lastname, password, phone_number,
                     username, role_id) VALUES (
-    1, '', '', '', -1, 'admin@admin.xyz', 'AdminFName', 'AdminLName', 'admin', '', 'admin', 2
+    1, '', '', '', -1, 'admin@admin.xyz', 'AdminFName', 'AdminLName', '$2a$10$mhiq/C2l7suUM7U2n48lfu3u7LzHYk1/DK5WioB0W7WWeF6XfTWji', '', 'admin', 2
 );
