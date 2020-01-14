@@ -7,6 +7,7 @@ import cz.vut.fit.pis.bakery.bakery.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,11 +45,20 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             User creds = new ObjectMapper().readValue(req.getInputStream(), User.class);
 
             User user = userRepository.findByUsername(creds.getUsername());
-            List<GrantedAuthority> authorities = user.getRoles().stream()
-                    .map(Role::getName)
-//                    .map(r -> "ROLE_" + r)
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+
+            if (user == null)
+            {
+                throw new BadCredentialsException("User does not exists!");
+            }
+
+            List<GrantedAuthority> authorities = new ArrayList<>();
+
+            String roleName = null;
+            if (user.getRole() != null)
+            {
+                roleName = user.getRole().getName();
+            }
+            authorities.add(new SimpleGrantedAuthority(roleName));
 
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     creds.getUsername(),

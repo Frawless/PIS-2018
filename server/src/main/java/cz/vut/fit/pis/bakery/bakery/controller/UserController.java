@@ -1,5 +1,6 @@
 package cz.vut.fit.pis.bakery.bakery.controller;
 
+import cz.vut.fit.pis.bakery.bakery.model.Address;
 import cz.vut.fit.pis.bakery.bakery.model.User;
 import cz.vut.fit.pis.bakery.bakery.model.Role;
 import cz.vut.fit.pis.bakery.bakery.repository.RoleRepository;
@@ -29,11 +30,14 @@ public class UserController {
 
     private final RoleRepository roleRepository;
 
+//    private final AddressRepository addressRepository;
+
     @Autowired
     public UserController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
+//        this.addressRepository = addressRepository;
     }
 
     /**
@@ -49,24 +53,22 @@ public class UserController {
     /**
      * Create new user.
      * Each user gets 'USER' authority when register.
-     * @param User new user credentials
+     * @param user new user credentials
      * @return new created user.
      */
     @PostMapping("/sing-up")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User User){
-        List<Role> roles = new ArrayList<>();
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user){
 
-        User user = userRepository.findByUsername(User.getUsername());
+        User user1 = userRepository.findByUsername(user.getUsername());
 
-        if (user != null){
+        if (user1 != null){
             return ResponseEntity.badRequest().build();
         }
 
-        roles.add(roleRepository.findByName("USER"));  // Add default role for each user
-
-        User.setRoles(roles);
-        User.setPassword(bCryptPasswordEncoder.encode(User.getPassword())); // Encrypt password
-        return ResponseEntity.ok(userRepository.save(User));
+        user.setRole(roleRepository.findByName("USER"));
+        user.setAddress(user.getAddress());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword())); // Encrypt password
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
     /**
@@ -108,11 +110,12 @@ public class UserController {
         user.setPhoneNumber(userDetails.getPhoneNumber());
         user.setAddress(userDetails.getAddress());
 
-        user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
+        if (!userDetails.getPassword().equals(""))
+        {
+            user.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
+        }
 
-        User updatedUser = userRepository.save(user);
-
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
     /**
@@ -135,23 +138,21 @@ public class UserController {
 
     @PutMapping("/{username}/grand/role")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<User> grandRole(@PathVariable(name = "username") String username, @RequestBody List<Role> newRoles){
+    public ResponseEntity<User> grandRole(@PathVariable(name = "username") String username, @RequestBody Role newRole){
         User user = userRepository.findByUsername(username);
 
         if (user == null){
             return ResponseEntity.notFound().build();
         }
 
-        if (!newRoles.isEmpty()){
+        Role role = roleRepository.findByName(newRole.getName());
 
-            List<Role> roles = newRoles.stream()
-                    .map(Role::getName)
-                    .map(roleRepository::findOne)
-                    .collect(Collectors.toList());
-            user.setRoles(roles);
-        }else {
-            user.setRoles(new ArrayList<>());
+        // pokud se zadana role v databazi nenasla, tak neaktualizovat
+        if (role != null)
+        {
+            user.setRole(role);
         }
+
 
         return ResponseEntity.ok(userRepository.save(user));
     }

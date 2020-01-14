@@ -14,7 +14,6 @@ import java.util.List;
 @Table(name = "\"order\"")
 public class Order extends ID{
 
-    @NotNull
     @Column(name = "createdate")
     private Date createDate;
 
@@ -22,7 +21,7 @@ public class Order extends ID{
     @Column(name = "exportdate")
     private Date exportDate;
 
-    @NotNull
+
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private State state = State.ACCEPTED;
@@ -33,7 +32,6 @@ public class Order extends ID{
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonBackReference(value = "orders-car")
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
@@ -42,6 +40,11 @@ public class Order extends ID{
     @JsonManagedReference(value = "orders-item")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     private List<Item> items;
+
+
+    @NotNull
+    @Embedded
+    private Address address;
 
 
     public Date getCreateDate() {
@@ -86,5 +89,13 @@ public class Order extends ID{
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

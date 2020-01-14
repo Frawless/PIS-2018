@@ -2,7 +2,6 @@ package cz.vut.fit.pis.bakery.bakery.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.Email;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -35,10 +34,6 @@ public class User extends ID {
     private String email;
 
 
-    @Column(name = "address")
-    private String address;
-
-
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -46,16 +41,12 @@ public class User extends ID {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    @ManyToMany(
-            fetch = FetchType.EAGER,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
-    )
-    @JoinTable(
-            name = "user_role",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")}
-    )
-    private List<Role> roles;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    @Embedded
+    private Address address;
 
 
     public String getFirstname() {
@@ -98,7 +89,6 @@ public class User extends ID {
         this.orders = orders;
     }
 
-
     public String getPassword() {
         return password;
     }
@@ -115,19 +105,19 @@ public class User extends ID {
         this.username = username;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 

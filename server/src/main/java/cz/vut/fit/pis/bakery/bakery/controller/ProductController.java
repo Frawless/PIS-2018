@@ -104,6 +104,7 @@ public class ProductController {
         product.setName(details.getName());
         product.setTotalAmount(details.getTotalAmount());
         product.setPrice(details.getPrice());
+        product.setImage(details.getImage());
 
         productRepository.save(product);
 

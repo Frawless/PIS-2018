@@ -21,4 +21,15 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     @Transactional
     @Query("UPDATE Product SET totalAmount = totalAmount - :val WHERE id = :productId AND totalAmount >= :val")
     void decrementProduct(@Param("productId") Long productId, @Param("val") int val);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Product SET totalAmount = totalAmount + :val WHERE id = :productId")
+    void incrementProduct(@Param("productId") Long productId, @Param("val") int val);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Product SET totalAmount = :maxAmount")
+    void resetTotalAmount(@Param("maxAmount") int maxAmount);
+
 }
